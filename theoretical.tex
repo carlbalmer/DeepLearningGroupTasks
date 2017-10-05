@@ -1,0 +1,68 @@
+\documentclass[10pt]{article}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\begin{document}
+\section{Exercise 1}
+
+First we need to flip the kernel,which results in :
+$\begin{bmatrix}
+1&-2&1\\
+1&2&2\\
+1&1&1
+\end{bmatrix}$, which is then convolved with I (I assume the convolution is a valid convolution without any sort of padding on I):
+
+I*k = $\begin{bmatrix}
+1-2+1+1+4+4-1-2-2&1-2+1+2+4+2-2-2-1\\
+11-4+2-1-4-4-1-1-1&2-4+1-2-4-2-1-1-1
+\end{bmatrix}$
+, which results in following result
+$\begin{bmatrix}
+4&3\\
+-13&-12
+\end{bmatrix}$
+
+
+\section{Exercise 2}
+Applying Max Pooling with a (3,3) filter with stride 3 results in a final image of size one third of the initial image, so the result of this operation on I is :
+
+$\begin{bmatrix}
+6&3\\
+2&1
+\end{bmatrix}$
+
+\section{Exercise 3}
+\subsection{Convolution}
+Convolving I with k yields I*k (assumption,valid convolution with no padding) =
+$\begin{bmatrix}
+7&10&10&6\\
+2&4&3&0\\
+-8&-13&-12&-6\\
+-4&-4&-4&-3
+\end{bmatrix}$
+
+\subsection{Rectified Linear Unit}
+The ReLU has the activation function max(0,x), which, when applied to the result above yields : $\begin{bmatrix}
+7&10&10&6\\
+2&4&3&0\\
+0&0&0&0\\
+0&0&0&0
+\end{bmatrix}$
+
+\subsection{Max Pooling}
+Max Pooling with stride 3 (with stride it makes no sense, when the assumption is a valid convolution), yields
+$\begin{bmatrix}
+10&10\\
+0&0
+\end{bmatrix}$
+
+\subsection{Flatten}
+Flatten the result yields : $\begin{bmatrix}
+10&10&0&0
+\end{bmatrix}^T$
+\subsection{Output}
+Multiplying the Weight Matrix with the flattened vector yields : $\begin{bmatrix}
+30\\
+110
+\end{bmatrix}$, so we would select the 2nd class.
+\end{document}
