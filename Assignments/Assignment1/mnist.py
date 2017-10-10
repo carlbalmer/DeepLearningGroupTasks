@@ -50,7 +50,8 @@ for p in model.parameters():
     print(p.size())
 
 
-
+// optimizers = ["op1","op2","op3"]
+//foreach op in ops (so is all in one place)
 optimizer = optim.Adadelta(model.parameters(), lr=0.01)
 
 
@@ -80,3 +81,5 @@ for epoch in range(10):
 plt.plot(np.arange(len(train_loss)), train_loss)
 plt.plot(np.arange(len(train_accu)), train_accu)
 plt.show()
+
+//end of foreach
