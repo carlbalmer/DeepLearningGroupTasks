@@ -8,3 +8,6 @@ Some ideas:
 -Game Playing (learning to play a [video] game)
 -Generating Music (eg. generating "fake" Mozart symphonies)
 (Carl)
+
+I already mentioned it, but it might be a stupid idea: Create handwritten text out of two (or more) handwritings. (Andrea)
+
