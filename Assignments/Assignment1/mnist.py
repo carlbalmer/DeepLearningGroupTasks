@@ -50,36 +50,36 @@ for p in model.parameters():
     print(p.size())
 
 
-// optimizers = ["op1","op2","op3"]
-//foreach op in ops (so is all in one place)
-optimizer = optim.Adadelta(model.parameters(), lr=0.01)
+# optimizers = ["op1","op2","op3"]
+# foreach op in ops (so is all in one place)
+# optimizer = optim.Adadelta(model.parameters(), lr=0.01)
+optimizers = {'Adadelta': optim.Adadelta(model.parameters(), lr=0.01), 'Adam': optim.Adam(model.parameters(), lr=0.01), 'SGD': optim.SGD(model.parameters(), lr=0.01)}
 
+for name, optimizer in optimizers.items():
+    model.train()
+    train_loss = []
+    train_accu = []
+    i = 0
+    for epoch in range(10):
+        for data, target in train_loader:
+            data, target = Variable(data), Variable(target)
+            optimizer.zero_grad()
+            output = model(data)
 
+            loss = F.cross_entropy(output, target)
+            loss.backward()    # calc gradients
+            train_loss.append(loss.data[0])
+            optimizer.step()   # update gradients
+            prediction = output.data.max(1)[1]   # first column has actual prob.
 
-model.train()
-train_loss = []
-train_accu = []
-i = 0
-for epoch in range(10):
-    for data, target in train_loader:
-        data, target = Variable(data), Variable(target)
-        optimizer.zero_grad()
-        output = model(data)
+            accuracy = (float(prediction.eq(target.data).sum())/batch_size)
+            train_accu.append(accuracy)
+            if i % 1000 == 0:
+                print('Train Step: {}\tLoss: {:.3f}\tAccuracy: {:.3f}\tOptimizer: {}'.format(i, loss.data[0], accuracy, name))
+            i += 1
 
-        loss = F.cross_entropy(output, target)
-        loss.backward()    # calc gradients
-        train_loss.append(loss.data[0])
-        optimizer.step()   # update gradients
-        prediction = output.data.max(1)[1]   # first column has actual prob.
+    plt.plot(np.arange(len(train_loss)), train_loss)
+    plt.plot(np.arange(len(train_accu)), train_accu)
+    plt.show()
 
-        accuracy = (float(prediction.eq(target.data).sum())/batch_size)
-        train_accu.append(accuracy)
-        if i % 1000 == 0:
-            print('Train Step: {}\tLoss: {:.3f}\tAccuracy: {:.3f}'.format(i, loss.data[0], accuracy))
-        i += 1
-
-plt.plot(np.arange(len(train_loss)), train_loss)
-plt.plot(np.arange(len(train_accu)), train_accu)
-plt.show()
-
-//end of foreach
+# end of foreach
