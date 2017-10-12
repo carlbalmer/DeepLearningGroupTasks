@@ -1,3 +1,5 @@
+from random import randint
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -54,7 +56,7 @@ for p in model.parameters():
 # optimizers = ["op1","op2","op3"]
 # foreach op in ops (so is all in one place)
 # optimizer = optim.Adadelta(model.parameters(), lr=0.01)
-optimizers = {'Adadelta': optim.Adadelta(model.parameters(), lr=0.01), 'Adam': optim.Adam(model.parameters(), lr=0.01), 'SGD': optim.SGD(model.parameters(), lr=0.01)}
+optimizers = { 'SGD': optim.SGD(model.parameters(), lr=0.01)}
 
 for name, optimizer in optimizers.items():
     model.train()
@@ -79,8 +81,13 @@ for name, optimizer in optimizers.items():
                 print('Train Step: {}\tLoss: {:.3f}\tAccuracy: {:.3f}\tOptimizer: {}'.format(i, loss.data[0], accuracy, name))
             i += 1
 
-    plt.plot(np.arange(len(train_loss)), train_loss)
-    plt.plot(np.arange(len(train_accu)), train_accu)
-    plt.show()
+    plt.plot(np.arange(len(train_loss)), train_loss, label='loss')
+    plt.plot(np.arange(len(train_accu)), train_accu, label='accuracy')
+    plt.legend()
+    plt.title(name)
+    plt.ylabel('loss/accuracy')
+    plt.xlabel('epoch')
+    plt.savefig(name+str(randint(0,1000))+'.png', bbox_inches='tight')
+    plt.close()
 
 # end of foreach
