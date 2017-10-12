@@ -18,10 +18,10 @@ class MnistModel(nn.Module):
         # feature map size is 13*13 after conv
         # padding=1 for same padding(if kernel is 2*2)
         #meaning 3 shd be 2?
-        self.conv2 = nn.Conv2d(64, 32, 3, padding=1,stride=1)
+        self.conv2 = nn.Conv2d(64, 32, 2, padding=1,stride=1)
         # feature map size is 12*12 by pooling -> (13-2+2*1) = 13*13 which is the effect of same
         #meaning fc1 shoud be built on 13*13?
-        self.fc1 = nn.Linear(32 * 12 * 12, 256)
+        self.fc1 = nn.Linear(32 * 13 * 13, 256)
         self.fc2 = nn.Linear(256, 10)
 
     def forward(self, x):
@@ -29,7 +29,7 @@ class MnistModel(nn.Module):
         x = F.relu(self.conv2(x))
         x= F.max_pool2d(x,2,stride=1)
         x = F.dropout(x,p=0.35)
-        x = x.view(-1,4608)  # reshape Variable
+        x = x.view(-1,5408)  # reshape Variable
 
         x = F.dropout(self.fc1(x),p=0.5)
         x = self.fc2(x)
