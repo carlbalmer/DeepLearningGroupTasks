@@ -11,12 +11,14 @@ class MnistModel(nn.Module):
     def __init__(self):
         super(MnistModel, self).__init__()
         # input is 28x28
-        # padding=2 for same padding
+        # padding=0 for valid conv
         self.conv1 = nn.Conv2d(1, 64, 3, padding=0,stride=2)
-        # feature map size is 13*13 by pooling
-        # padding=2 for same padding
+        # feature map size is 13*13 after conv
+        # padding=1 for same padding(if kernel is 2*2)
+        #meaning 3 shd be 2?
         self.conv2 = nn.Conv2d(64, 32, 3, padding=1,stride=1)
-        # feature map size is 12*12 by pooling
+        # feature map size is 12*12 by pooling -> (13-2+2*1) = 13*13 which is the effect of same
+        #meaning fc1 shoud be built on 13*13?
         self.fc1 = nn.Linear(32 * 12 * 12, 256)
         self.fc2 = nn.Linear(256, 10)
 
