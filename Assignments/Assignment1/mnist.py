@@ -32,8 +32,7 @@ class MnistModel(nn.Module):
         return F.log_softmax(x)
 
 
-model = MnistModel()
-
+model = MnistModel() if not torch.cuda.is_available() else MnistModel().cuda() # use cuda if available
 
 
 batch_size = 50
@@ -62,7 +61,7 @@ for name, optimizer in optimizers.items():
     i = 0
     for epoch in range(10):
         for data, target in train_loader:
-            data, target = Variable(data), Variable(target)
+            data, target = (Variable(data), Variable(target)) if not torch.cuda.is_available() else (Variable(data).cuda(), Variable(target).cuda()) # use cuda if available
             optimizer.zero_grad()
             output = model(data)
 
