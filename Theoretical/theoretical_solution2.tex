@@ -1,0 +1,19 @@
+\documentclass[10pt]{article}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\begin{document}
+\section{Exercise 1}
+\subsection{Cross Entropy}
+H(y,g)= -(0*log(0.25)+1*log(0.6)+0*log(0.15))=0.222
+\subsection{Mean Squared Error Loss}
+MSE(y,g)= $\frac{1}{3}(0.25^2+(-0.4)^2+0.15^2)$=0.0817
+\subsection{Hinge Loss}
+SVM(y,j)=max(0,1.25)+max(0,0.4)max(0,1.15)=2.8
+
+\section{Evaluation metrics}
+\subsection{Accuracy}
+If we have highly unbalanced data the problem of accuracy as a metric is quite apparent: Let's consider an example with medical data: normally only a few patients have a certain disease. If our dataset consists of 200 patients, of which only 8 have cancer, than a classifier which predicts that no patient has cancer would yield 96 percent accuracy; this prediction however would be deadly for the patients. If we also consider false negatives, than we see that in every case of a cancer patient, the classifier predicted no cancer and thus false negatives are 100 percent.The ability to  capture misclassifications in a satisfying way is what is lacking in the accuracy metric.
+\subsection{Jaccard Index}
+   
+\end{document}
