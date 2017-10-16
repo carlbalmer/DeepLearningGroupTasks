@@ -2,6 +2,7 @@
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amssymb}
+\usepackage{hyperref}
 \begin{document}
 \section{Exercise 1}
 \subsection{Cross Entropy}
@@ -13,7 +14,26 @@ SVM(y,j)=max(0,1.25)+max(0,0.4)max(0,1.15)=2.8
 
 \section{Evaluation metrics}
 \subsection{Accuracy}
-If we have highly unbalanced data the problem of accuracy as a metric is quite apparent: Let's consider an example with medical data: normally only a few patients have a certain disease. If our dataset consists of 200 patients, of which only 8 have cancer, than a classifier which predicts that no patient has cancer would yield 96 percent accuracy; this prediction however would be deadly for the patients. If we also consider false negatives, than we see that in every case of a cancer patient, the classifier predicted no cancer and thus false negatives are 100 percent.The ability to  capture misclassifications in a satisfying way is what is lacking in the accuracy metric.
+$$ACC = \frac{TP+TN}{P+N}$$, high accuracy of predicting predominant class is easily achieved and misleading.
+If we have highly unbalanced data the problem of accuracy as a metric is quite apparent:
+Let's consider an example with medical data: normally only a few patients have a certain disease.
+If our dataset consists of 200 patients, of which only 8 have cancer, than a classifier which predicts
+that no patient has cancer would yield 96 percent accuracy;
+this prediction however would be deadly for the patients.
+If we also consider false negatives, than we see that in every case of a cancer patient,
+the classifier predicted no cancer and thus false negatives are 100 percent.The ability to  capture misclassifications in a satisfying way is what is lacking in the accuracy metric.
+\paragraph{}
+In a muti-class setting, exact matching does not distinguish between partially correct and completely incorrect labeling.
+The denominator, \textbf{P+N} which is equivalent to number of samples(N) is constant. It is thus sensitive to only how many labels correctly identified with respect to \textit{N}
+\paragraph{}
+ $$F1 =\frac{1}{n}\sum_{i=1}^{n} \frac{2|{T_i}\cap{P_i}|}{|P_i|+|T_i|}$$
+ The hamonic mean of precision $F1 =\frac{1}{n}\sum_{i=1}^{n} \frac{|{T_i}\cap{P_i}|}{|T_i|}$ and recall$Recall =\frac{1}{n}\sum_{i=1}^{n} \frac{|{T_i}\cap{P_i}|}{|P_i|}$
+ $$J_{acc} =\frac{1}{n}\sum_{i=1}^{n} \frac{|{T_i}\cap{P_i}|}{|{T_i}\cup{P_i}|}$$
+ which can e rewritten as
+ $$J_{acc} =\frac{1}{n}\sum_{i=1}^{n} \frac{|{T_i}\cap{P_i}|}{|P_i|+|T_i|-|{T_i}\cap{P_i}|}$$
+ $$J_{acc}\leq{F1}$$
+Jaccard metric penalize bad classification more than the F score \hyperref[besteval]{''https://stats.stackexchange.com/questions/273537/f1-dice-score-vs-iou''}
+
 \subsection{Jaccard Index}
    
 \end{document}
