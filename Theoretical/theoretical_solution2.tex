@@ -12,7 +12,7 @@ MSE(y,g)= $\frac{1}{3}(0.25^2+(-0.4)^2+0.15^2)$=0.0817
 \subsection{Hinge Loss}
 SVM(y,j)=max(0,1.25)+max(0,0.4)max(0,1.15)=2.8
 
-\section{Evaluation metrics}
+\section{Task A}
 \subsection{Accuracy}
 $$ACC = \frac{TP+TN}{P+N}$$, high accuracy of predicting predominant class is easily achieved and misleading.
 If we have highly unbalanced data the problem of accuracy as a metric is quite apparent:
@@ -35,6 +35,37 @@ The denominator, \textbf{P+N} which is equivalent to number of samples(N) is con
 Jaccard metric penalize bad classification more than the F score \hyperref[besteval]{''https://stats.stackexchange.com/questions/273537/f1-dice-score-vs-iou''}
 
 
-\subsection{Jaccard Index}
+\subsection{Task B}
+\begin{center}
+\begin{tabular}{ c c }
+ GT Class & Freq  \\
+ \hline
+ B & 4  \\ 
+ TD & 4   \\ 
+ all other classes$(B^*C^*D^*T^*)\backslash (B,TB)$ & 0   
+\end{tabular}
+\end{center}
+\paragraph{Evaluation of class B}
+$$|T_b| = |4B| = 4 and |P_b| = |2B,2T,2D| = 6$$
+$$Jacc_b = \frac{|4B\cap{(2B,2T,2D}|)}{|P_b|+|T_b|-|(4B\cap{2B,2T,2D)}|}$$
+$$Jacc_b = \frac{|2B|}{4+6-|2B|}$$
+$$Jacc_b = \frac{2}{4+6-2} = \frac{1}{4}$$
+
+Following the definition :
+$$Precision_b = \frac{2}{6} = \frac{1}{3}$$
+$$Recall_b = \frac{2}{4} = \frac{1}{2}$$
+$$F1 = \frac{2(Precision\times Recall)}{Precision + Recall} = $$
+
+\paragraph{Evaluation of class TD}  
+$$|T_{td}| = |4T,4D| = 8, |P_{td}| = |3T,2C,B,D| = 7$$
+$$Jacc_b = \frac{|(4T,4D)\cap{(3T,2C,B,D}|)}{|P_{td}|+|T_{td}|-|(4T,4D)\cap{(3T,2C,B,D}|)|}$$
+$$Jacc_{td} = \frac{|(3T,D)|}{8+7-|(3T,D)|}$$
+$$Jacc_{td} = \frac{4}{8+7-4} = \frac{4}{11}$$
+
+$$Precision_{td} = \frac{4}{7} = $$
+$$Recall_{td} = \frac{4}{8} = \frac{1}{2}$$
+$$F1 = \frac{2(Precision\times Recall)}{Precision + Recall} = $$
+
+\paragraph{Mean Computations}
    
 \end{document}
