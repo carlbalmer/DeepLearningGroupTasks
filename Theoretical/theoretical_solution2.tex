@@ -10,7 +10,7 @@ H(y,g)= -(0*log(0.25)+1*log(0.6)+0*log(0.15))=0.222
 \subsection{Mean Squared Error Loss}
 MSE(y,g)= $\frac{1}{3}(0.25^2+(-0.4)^2+0.15^2)$=0.0817
 \subsection{Hinge Loss}
-SVM(y,j)=max(0,1.25)+max(0,0.4)max(0,1.15)=2.8
+SVM(y,j)=max(0,1.25)+max(0,0.6)max(0,1.15)=3
 
 \section{Task A}
 \subsection{Accuracy}
@@ -26,12 +26,13 @@ the classifier predicted no cancer and thus false negatives are 100 percent.The 
 In a muti-class setting, exact matching does not distinguish between partially correct and completely incorrect labeling.
 The denominator, \textbf{P+N} which is equivalent to number of samples(N) is constant. It is thus sensitive to only how many labels correctly identified with respect to \textit{N}
 \paragraph{}
- $$F1 =\frac{1}{n}\sum_{i=1}^{n} \frac{2|{T_i}\cap{P_i}|}{|P_i|+|T_i|}$$
- The hamonic mean of precision $Precision =\frac{1}{n}\sum_{i=1}^{n} \frac{|{T_i}\cap{P_i}|}{|T_i|}$ and recall\\$Recall =\frac{1}{n}\sum_{i=1}^{n} \frac{|{T_i}\cap{P_i}|}{|P_i|}$
- $$J_{acc} =\frac{1}{n}\sum_{i=1}^{n} \frac{|{T_i}\cap{P_i}|}{|{T_i}\cup{P_i}|}$$
+For a single class $C$ Precision, Recall and  $F1$ are defined as follows:
+ $$F1_c =\frac{2|{T_c}\cap{P_c}|}{|P_c|+|T_c|}$$
+ The hamonic mean of precision $Precision =\frac{|{T_c}\cap{P_c}|}{|T_c|}$ and recall\\$Recall =\frac{|{T_c}\cap{P_c}|}{|P_c|}$
+ $$Jacc_c =\frac{|{T_c}\cap{P_c}|}{|{T_c}\cup{P_c}|}$$
  which can e rewritten as
- $$J_{acc} =\frac{1}{n}\sum_{i=1}^{n} \frac{|{T_i}\cap{P_i}|}{|P_i|+|T_i|-|{T_i}\cap{P_i}|}$$
- $$J_{acc}\leq{F1}$$
+ $$Jacc_c =\frac{|{T_c}\cap{P_c}|}{|P_c|+|T_c|-|{T_c}\cap{P_c}|}$$
+ $$Jacc_c\leq{F1_c}$$
 Jaccard metric penalize bad classification more than the F score \hyperref[besteval]{''https://stats.stackexchange.com/questions/273537/f1-dice-score-vs-iou''}
 
 
@@ -69,7 +70,7 @@ $$F1 = \frac{2(Precision\times Recall)}{Precision + Recall} = \frac{8}{15}$$
 
 \paragraph{Mean Computations\\}
 
-class balance:
+\textbf{class balance:}
 
  $$Jacc_{cb} =\frac{1}{n}\sum_{i=1}^{n} \frac{|{T_i}\cap{P_i}|}{|{T_i}\cup{P_i}|} = \frac{1}{2}\left(\frac{1}{4}+\frac{4}{11}\right)= 0.3068$$
  
@@ -79,17 +80,22 @@ $$Recall_{cb} =\frac{1}{n}\sum_{i=1}^{n} \frac{|{T_i}\cap{P_i}|}{|P_i|} = \frac{
  
 $$F1_{cb} =\frac{1}{n}\sum_{i=1}^{n} \frac{2|{T_i}\cap{P_i}|}{|P_i|+|T_i|} = \frac{1}{2}\left(\frac{2}{5}+\frac{8}{15}\right) = 0.4\overline{6}$$
 
-class frequency:
+\textbf{class frequency:}
 
-exact match:
+Because we only have two classes and both have a freq of 0.5 the results are the same as with the class balance.
+
+\textbf{exact match:}
 $$ ExMatch = \frac{\#correct Instances}{\# instances} = \frac{2}{8} = 0.25 $$
 
 \paragraph{Questions\\}
 
-1. Intuitively the Exact Match would be the strictest metric possible. However,it might not be the lowest number: how come?
+\textbf{1. Intuitively the Exact Match would be the strictest metric possible. However,it might not be the lowest number: how come?\\}
+Because the absolute values of these metrics are not comparable. A value of 1 in the jaccard metric does not mean the same as a $F1$ value of 1
 
-2. Can you compute the global accuracy on this example? Justify your answer.
+\textbf{2. Can you compute the global accuracy on this example? Justify your answer.\\}
 
-3. What is the main issue going from multi-class to multi-label setting?
+\textbf{3. What is the main issue going from multi-class to multi-label setting?\\}
+I a multi-class setting a prediction is eighter correct of not. In a multi-label setting we can have partially correct labels. Under these conditions we need different definition for the metrics.
+
    
 \end{document}
