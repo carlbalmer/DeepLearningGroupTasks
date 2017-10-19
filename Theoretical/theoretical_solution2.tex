@@ -6,11 +6,11 @@
 \begin{document}
 \section{Exercise 1}
 \subsection{Cross Entropy}
-H(y,g)= -(0*log(0.25)+1*log(0.6)+0*log(0.15))=0.222
+$$H(y,g)= -(0*log(0.25)+1*log(0.6)+0*log(0.15))=0.222$$
 \subsection{Mean Squared Error Loss}
-MSE(y,g)= $\frac{1}{3}(0.25^2+(-0.4)^2+0.15^2)$=0.0817
+$$MSE(y,g)= \frac{1}{3}(0.25^2+(-0.4)^2+0.15^2)=0.0817$$
 \subsection{Hinge Loss}
-SVM(y,j)=max(0,1.25)+max(0,0.6)max(0,1.15)=3
+$$SVM(y,j)=max(0,0.25-0.6+1)+max(0,0.15-0.6+1)= 1.2$$
 
 \section{Task A}
 \subsection{Accuracy}
@@ -27,8 +27,8 @@ In a muti-class setting, exact matching does not distinguish between partially c
 The denominator, \textbf{P+N} which is equivalent to number of samples(N) is constant. It is thus sensitive to only how many labels correctly identified with respect to \textit{N}
 \paragraph{}
 For a single class $C$ Precision, Recall and  $F1$ are defined as follows:
- $$F1_c =\frac{2|{T_c}\cap{P_c}|}{|P_c|+|T_c|}$$
- The hamonic mean of precision $Precision =\frac{|{T_c}\cap{P_c}|}{|T_c|}$ and recall\\$Recall =\frac{|{T_c}\cap{P_c}|}{|P_c|}$
+ $$F1_c =\frac{2|{Precision_c}\cap{Recall_c}|}{|Recall_c|+|Precision_c|}$$
+ The hamonic mean of  $Precision_c =\frac{|{T_c}\cap{P_c}|}{|T_c|}$ and $Recall_c =\frac{|{T_c}\cap{P_c}|}{|P_c|}$
  $$Jacc_c =\frac{|{T_c}\cap{P_c}|}{|{T_c}\cup{P_c}|}$$
  which can e rewritten as
  $$Jacc_c =\frac{|{T_c}\cap{P_c}|}{|P_c|+|T_c|-|{T_c}\cap{P_c}|}$$
