@@ -27,7 +27,7 @@ In a muti-class setting, exact matching does not distinguish between partially c
 The denominator, \textbf{P+N} which is equivalent to number of samples(N) is constant. It is thus sensitive to only how many labels correctly identified with respect to \textit{N}
 \paragraph{}
 For a single class $C$ Precision, Recall and  $F1$ are defined as follows:
- $$F1_c =\frac{2|{Precision_c}\cap{Recall_c}|}{|Recall_c|+|Precision_c|}$$
+ $$F1_c =\frac{2|{Precision_c}\times{Recall_c}|}{|Recall_c|+|Precision_c|}$$
  The hamonic mean of  $Precision_c =\frac{|{T_c}\cap{P_c}|}{|T_c|}$ and $Recall_c =\frac{|{T_c}\cap{P_c}|}{|P_c|}$
  $$Jacc_c =\frac{|{T_c}\cap{P_c}|}{|{T_c}\cup{P_c}|}$$
  which can e rewritten as
@@ -41,38 +41,62 @@ Jaccard metric penalize bad classification more than the F score \hyperref[beste
 \begin{tabular}{ c c c }
  GT Class & \# & Freq  \\
  \hline
- B & 4 &  0.5  \\ 
- TD & 4 & 0.5   \\ 
- all other classes$(B^*C^*D^*T^*)\backslash (B,TB)$ & 0 & 0 
+  B & 4  \\
+ T & 4   \\
+  D & 4  \\
+ C & 0
 \end{tabular}
 \end{center}
-\paragraph{Evaluation of class B}
-$$|T_b| = |4B| = 4 $$ 
-$$|P_b| = |2B,2T,2D| = 6$$
-$$Jacc_b = \frac{|4B\cap{(2B,2T,2D}|)}{|P_b|+|T_b|-|(4B\cap{2B,2T,2D)}|}$$
-$$Jacc_b = \frac{|2B|}{4+6-|2B|}$$
-$$Jacc_b = \frac{2}{4+6-2} = \frac{1}{4}$$
+$Prescision =\frac{1}{n}\sum_{i=1}^{n} \frac{tp}{tp+fp}$
+$Recall =\frac{1}{n}\sum_{i=1}^{n} \frac{tp}{tp+fn}$
+$Accuracy =\frac{1}{n}\sum_{i=1}^{n} \frac{tp}{tp+tn+fp+fn}$
+$J_{acc} =\frac{1}{n}\sum_{i=1}^{n} \frac{tp}{tp+fp+fn}$
+\paragraph{Confusion Metric}
+\paragraph{}
+\begin{center}
+B \begin{tabular}{ c| c }
+ 2 & 3  \\
+ \hline
+ 1& 2
+\end{tabular}
+ T \begin{tabular}{ c| c }
+ 3 & 2  \\
+ \hline
+ 2& 1
+\end{tabular}
+ D \begin{tabular}{ c| c }
+ 1 & 2  \\
+ \hline
+ 2& 3
+\end{tabular}
+ C \begin{tabular}{ c| c }
+ 0 & 6  \\
+ \hline
+ 2& 0
+\end{tabular}
 
-Following the definition :
-$$Precision_b = \frac{2}{6} = \frac{1}{3}$$
-$$Recall_b = \frac{2}{4} = \frac{1}{2}$$
-$$F1 = \frac{2(Precision\times Recall)}{Precision + Recall} = \frac{2}{5}$$
+\begin{tabular}{ c|c|c|c|c|c }
+ &Accuracy & Precision & Recall&Jacc&F1 \\
+ \hline
+ B & $\frac{5}{8}= 0.63$ & $\frac{2}{3}=0.67$ & $\frac{2}{4}= 0.5$ & $\frac{2}{5}= 0.4$ & $\frac{n}{n}=$  \\
+  \hline
+ T & $\frac{5}{8} = 0.63$ & $\frac{3}{5} = 0.6$ & $\frac{3}{4} = 0.75$ & $\frac{3}{6} = 0.5$ & $\frac{n}{n} =$\\
+  \hline
+ D & $\frac{1}{8} = 0.13$ & $\frac{1}{3}= 0.33 $ & $\frac{1}{4}=0.25 $ & $\frac{1}{6} = 0.17$ & $\frac{n}{n}$\\
+  \hline
+ C & $\frac{0}{8} = 0$ & $\frac{0}{2} =0$ & $\frac{0}{2} = 0$ & $\frac{0}{2}=0$ & $2\frac{0}{0} = 0$ \\
+ \hline\hline
+ AvgF& && & & \\
+ AvgC& & & & &
 
-\paragraph{Evaluation of class TD}  
-$$|T_{td}| = |4T,4D| = 8, |P_{td}| = |3T,2C,B,D| = 7$$
-$$Jacc_b = \frac{|(4T,4D)\cap{(3T,2C,B,D}|)}{|P_{td}|+|T_{td}|-|(4T,4D)\cap{(3T,2C,B,D}|)|}$$
-$$Jacc_{td} = \frac{|(3T,D)|}{8+7-|(3T,D)|}$$
-$$Jacc_{td} = \frac{4}{8+7-4} = \frac{4}{11}$$
-
-$$Precision_{td} = \frac{4}{7}$$
-$$Recall_{td} = \frac{4}{8} = \frac{1}{2}$$
-$$F1 = \frac{2(Precision\times Recall)}{Precision + Recall} = \frac{8}{15}$$
-
+\end{tabular}
+\end{center}
 \paragraph{Mean Computations\\}
 
 \textbf{class balance:}
 
- $$Jacc_{cb} =\frac{1}{n}\sum_{i=1}^{n} \frac{|{T_i}\cap{P_i}|}{|{T_i}\cup{P_i}|} = \frac{1}{2}\left(\frac{1}{4}+\frac{4}{11}\right)= 0.3068$$
+is this the right way?
+ $$Jacc_{cb} = \frac{1}{4}\left(0.4+0.5+0.17+0\right)= 0.27$$
  
 $$Precision_{cb} =\frac{1}{n}\sum_{i=1}^{n} \frac{|{T_i}\cap{P_i}|}{|T_i|}= \frac{1}{2}\left(\frac{1}{3}+\frac{4}{7}\right) = 0.4\overline{523809}$$
 
