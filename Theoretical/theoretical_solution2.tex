@@ -23,17 +23,17 @@ this prediction however would be deadly for the patients.
 If we also consider false negatives, than we see that in every case of a cancer patient,
 the classifier predicted no cancer and thus false negatives are 100 percent.The ability to  capture misclassifications in a satisfying way is what is lacking in the accuracy metric.
 \paragraph{}
-In a muti-class setting, exact matching does not distinguish between partially correct and completely incorrect labeling.
+In a multi-class setting, exact matching does not distinguish between partially correct and completely incorrect labelling.
 The denominator, \textbf{P+N} which is equivalent to number of samples(N) is constant. It is thus sensitive to only how many labels correctly identified with respect to \textit{N}
 \paragraph{}
 For a single class $C$ Precision, Recall and  $F1$ are defined as follows:
  $$F1_c =\frac{2|{Precision_c}\times{Recall_c}|}{|Recall_c|+|Precision_c|}$$
- The hamonic mean of  $Precision_c =\frac{|{T_c}\cap{P_c}|}{|T_c|}$ and $Recall_c =\frac{|{T_c}\cap{P_c}|}{|P_c|}$
+ The harmonic mean of  $Precision_c =\frac{|{T_c}\cap{P_c}|}{|T_c|}$ and $Recall_c =\frac{|{T_c}\cap{P_c}|}{|P_c|}$
  $$Jacc_c =\frac{|{T_c}\cap{P_c}|}{|{T_c}\cup{P_c}|}$$
  which can e rewritten as
  $$Jacc_c =\frac{|{T_c}\cap{P_c}|}{|P_c|+|T_c|-|{T_c}\cap{P_c}|}$$
  $$Jacc_c\leq{F1_c}$$
-Jaccard metric penalize bad classification more than the F score \hyperref[besteval]{''https://stats.stackexchange.com/questions/273537/f1-dice-score-vs-iou''}
+Jaccard's metric penalizes bad classification more than the F score \hyperref[besteval]{''https://stats.stackexchange.com/questions/273537/f1-dice-score-vs-iou''}
 
 
 \subsection{Task B}
@@ -51,7 +51,7 @@ $Prescision =\frac{1}{n}\sum_{i=1}^{n} \frac{tp}{tp+fp}$
 $Recall =\frac{1}{n}\sum_{i=1}^{n} \frac{tp}{tp+fn}$
 $Accuracy =\frac{1}{n}\sum_{i=1}^{n} \frac{tp}{tp+tn+fp+fn}$
 $J_{acc} =\frac{1}{n}\sum_{i=1}^{n} \frac{tp}{tp+fp+fn}$
-\paragraph{Confusion Metric}
+\paragraph{Confusion Matrix}
 \paragraph{}
 \begin{center}
 B \begin{tabular}{ c| c }
@@ -78,11 +78,11 @@ B \begin{tabular}{ c| c }
 \begin{tabular}{ c|c|c|c|c|c }
  &Accuracy & Precision & Recall&Jacc&F1 \\
  \hline
- B & $\frac{5}{8}= 0.63$ & $\frac{2}{3}=0.67$ & $\frac{2}{4}= 0.5$ & $\frac{2}{5}= 0.4$ & $\frac{n}{n}=$  \\
+ B & $\frac{5}{8}= 0.63$ & $\frac{2}{3}=0.67$ & $\frac{2}{4}= 0.5$ & $\frac{2}{5}= 0.4$ & $\frac{4}{7}$  \\
   \hline
- T & $\frac{5}{8} = 0.63$ & $\frac{3}{5} = 0.6$ & $\frac{3}{4} = 0.75$ & $\frac{3}{6} = 0.5$ & $\frac{n}{n} =$\\
+ T & $\frac{5}{8} = 0.63$ & $\frac{3}{5} = 0.6$ & $\frac{3}{4} = 0.75$ & $\frac{3}{6} = 0.5$ & $\frac{2}{3}$\\
   \hline
- D & $\frac{1}{8} = 0.13$ & $\frac{1}{3}= 0.33 $ & $\frac{1}{4}=0.25 $ & $\frac{1}{6} = 0.17$ & $\frac{n}{n}$\\
+ D & $\frac{1}{8} = 0.13$ & $\frac{1}{3}= 0.33 $ & $\frac{1}{4}=0.25 $ & $\frac{1}{6} = 0.17$ & $\frac{2}{7}$\\
   \hline
  C & $\frac{0}{8} = 0$ & $\frac{0}{2} =0$ & $\frac{0}{2} = 0$ & $\frac{0}{2}=0$ & $2\frac{0}{0} = 0$ \\
  \hline\hline
@@ -95,14 +95,14 @@ B \begin{tabular}{ c| c }
 
 \textbf{class balance:}
 
-is this the right way?
+
  $$Jacc_{cb} = \frac{1}{4}\left(0.4+0.5+0.17+0\right)= 0.27$$
  
 $$Precision_{cb} =\frac{1}{n}\sum_{i=1}^{n} \frac{|{T_i}\cap{P_i}|}{|T_i|}= \frac{1}{2}\left(\frac{1}{3}+\frac{4}{7}\right) = 0.4\overline{523809}$$
 
 $$Recall_{cb} =\frac{1}{n}\sum_{i=1}^{n} \frac{|{T_i}\cap{P_i}|}{|P_i|} = \frac{1}{2} \left(\frac{1}{2} + \frac{1}{2}\right) = 0.5$$
  
-$$F1_{cb} =\frac{1}{n}\sum_{i=1}^{n} \frac{2|{T_i}\cap{P_i}|}{|P_i|+|T_i|} = \frac{1}{2}\left(\frac{2}{5}+\frac{8}{15}\right) = 0.4\overline{6}$$
+$$F1_{cb} =\frac{1}{n}\sum_{i=1}^{n} \frac{2|{T_i}\cap{P_i}|}{|P_i|+|T_i|} = \frac{1}{3}\left(\frac{4}{7}+\frac{2}{3}+\frac{2}{7}\right) =\frac{32}{63} $$
 
 \textbf{class frequency:}
 
@@ -119,7 +119,7 @@ Because the absolute values of these metrics are not comparable. A value of 1 in
 \textbf{2. Can you compute the global accuracy on this example? Justify your answer.\\}
 
 \textbf{3. What is the main issue going from multi-class to multi-label setting?\\}
-I a multi-class setting a prediction is eighter correct of not. In a multi-label setting we can have partially correct labels. Under these conditions we need different definition for the metrics.
+In a multi-class setting a prediction is either  correct of not. In a multi-label setting we can have partially correct labels. Under these conditions we need different definition for the metrics.
 
    
 \end{document}
