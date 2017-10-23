@@ -33,4 +33,4 @@ print('Subset accuracy(exact match): {0}'.format(
 print('F1_per class, combining Precision,recall,F1 and freq: {0}'.format(
     sklearn.metrics.precision_recall_fscore_support(y_true, y_pred)))
 print('F1, avarging_no of class: {0}'.format(sklearn.metrics.f1_score(y_true, y_pred, average='macro')))
-print('F1, avarging_freq: {0}'.format(sklearn.metrics.(y_true, y_pred, average='weighted')))
+print('F1, avarging_freq: {0}'.format(sklearn.metrics.f1_score(y_true, y_pred, average='weighted')))
