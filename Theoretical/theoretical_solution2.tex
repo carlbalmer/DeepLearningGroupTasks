@@ -26,20 +26,23 @@ the classifier predicted no cancer and thus false negatives are 100 percent.The 
 In a multi-class setting, exact matching does not distinguish between partially correct and completely incorrect labelling.
 The denominator, \textbf{P+N} which is equivalent to number of samples(N) is constant. It is thus sensitive to only how many labels correctly identified with respect to \textit{N}
 \paragraph{}
-For a single class $C$ Precision, Recall and  $F1$ are defined as follows:
- $$F1_c =\frac{2|{Precision_c}\times{Recall_c}|}{|Recall_c|+|Precision_c|}$$
- The harmonic mean of  $Precision_c =\frac{|{T_c}\cap{P_c}|}{|T_c|}$ and $Recall_c =\frac{|{T_c}\cap{P_c}|}{|P_c|}$
- $$Jacc_c =\frac{|{T_c}\cap{P_c}|}{|{T_c}\cup{P_c}|}$$
- which can e rewritten as
- $$Jacc_c =\frac{|{T_c}\cap{P_c}|}{|P_c|+|T_c|-|{T_c}\cap{P_c}|}$$
- $$Jacc_c\leq{F1_c}$$
+In a multiclass setting, the evaluation is averaged over the individual class instances.
+This therefore gives the following formulae for F1 and jaccard Index:
+$$F1 =\frac{1}{n}\sum_{i=1}^{n} \frac{2tp}{2tp+fp+fn}$$
+$$Jacc =\frac{1}{n}\sum_{i=1}^{n} \frac{tp}{tp+fp+fn}$$
+
+$$Jacc_c\leq{F1_c}$$
 Jaccard's metric penalizes bad classification more than the F score \hyperref[besteval]{''https://stats.stackexchange.com/questions/273537/f1-dice-score-vs-iou''}
-
-
+As F1 automatically weights more TP than Jaccard, given the same set of predictions,
+F1 will give the notion of high performance than Jaccard for any single instance.
+Averaged over number of classes, F1 will easily achieve high evaluation values.
+Thus between F1 and Jaccard in NN in multi-label settings, Jaccard will pressure
+the network to give more TP's keeping FP and FN low, to achieve high evaluation scores, which is what
+one would expect of a NN.
 \subsection{Task B}
 \begin{center}
-\begin{tabular}{ c c c }
- GT Class & \# & Freq  \\
+\begin{tabular}{ c c  }
+ GT Class &  Freq  \\
  \hline
   B & 4  \\
  T & 4   \\
@@ -47,12 +50,11 @@ Jaccard's metric penalizes bad classification more than the F score \hyperref[be
  C & 0
 \end{tabular}
 \end{center}
-$Prescision =\frac{1}{n}\sum_{i=1}^{n} \frac{tp}{tp+fp}$
+$Precision =\frac{1}{n}\sum_{i=1}^{n} \frac{tp}{tp+fp}$
 $Recall =\frac{1}{n}\sum_{i=1}^{n} \frac{tp}{tp+fn}$
 $Accuracy =\frac{1}{n}\sum_{i=1}^{n} \frac{tp}{tp+tn+fp+fn}$
 $J_{acc} =\frac{1}{n}\sum_{i=1}^{n} \frac{tp}{tp+fp+fn}$
 \paragraph{Confusion Matrix}
-\paragraph{}
 \begin{center}
 B \begin{tabular}{ c| c }
  2 & 3  \\
@@ -78,48 +80,61 @@ B \begin{tabular}{ c| c }
 \begin{tabular}{ c|c|c|c|c|c }
  &Accuracy & Precision & Recall&Jacc&F1 \\
  \hline
- B & $\frac{5}{8}= 0.63$ & $\frac{2}{3}=0.67$ & $\frac{2}{4}= 0.5$ & $\frac{2}{5}= 0.4$ & $\frac{4}{7}$  \\
+ B & $\frac{5}{8}= 0.63$ & $\frac{2}{3}=0.67$ & $\frac{2}{4}= 0.5$ & $\frac{2}{5}= 0.4$ & $\frac{4}{7} = 0.57$  \\
   \hline
- T & $\frac{5}{8} = 0.63$ & $\frac{3}{5} = 0.6$ & $\frac{3}{4} = 0.75$ & $\frac{3}{6} = 0.5$ & $\frac{2}{3}$\\
+ T & $\frac{5}{8} = 0.63$ & $\frac{3}{5} = 0.6$ & $\frac{3}{4} = 0.75$ & $\frac{3}{6} = 0.5$ & $\frac{2}{3} = 0.67$\\
   \hline
- D & $\frac{1}{8} = 0.13$ & $\frac{1}{3}= 0.33 $ & $\frac{1}{4}=0.25 $ & $\frac{1}{6} = 0.17$ & $\frac{2}{7}$\\
+ D & $\frac{1}{8} = 0.13$ & $\frac{1}{3}= 0.33 $ & $\frac{1}{4}=0.25 $ & $\frac{1}{6} = 0.17$ & $\frac{2}{7}= 0.29$\\
   \hline
  C & $\frac{0}{8} = 0$ & $\frac{0}{2} =0$ & $\frac{0}{2} = 0$ & $\frac{0}{2}=0$ & $2\frac{0}{0} = 0$ \\
  \hline\hline
- AvgF& && & & \\
- AvgC& & & & &
+ AvgC&0.35 &0.4&0.38 &0.27 &0.38 \\
+ AvgF&0.46 &0.53 &0.5 &0.36 &0.51
 
 \end{tabular}
 \end{center}
 \paragraph{Mean Computations\\}
 
-\textbf{class balance:}
+\textbf{class No:}
 
 
- $$Jacc_{cb} = \frac{1}{4}\left(0.4+0.5+0.17+0\right)= 0.27$$
- 
-$$Precision_{cb} =\frac{1}{n}\sum_{i=1}^{n} \frac{|{T_i}\cap{P_i}|}{|T_i|}= \frac{1}{2}\left(\frac{1}{3}+\frac{4}{7}\right) = 0.4\overline{523809}$$
+$$Jacc = \frac{1}{4}\left(0.4+0.5+0.17+0\right)= 0.27$$
 
-$$Recall_{cb} =\frac{1}{n}\sum_{i=1}^{n} \frac{|{T_i}\cap{P_i}|}{|P_i|} = \frac{1}{2} \left(\frac{1}{2} + \frac{1}{2}\right) = 0.5$$
- 
-$$F1_{cb} =\frac{1}{n}\sum_{i=1}^{n} \frac{2|{T_i}\cap{P_i}|}{|P_i|+|T_i|} = \frac{1}{3}\left(\frac{4}{7}+\frac{2}{3}+\frac{2}{7}\right) =\frac{32}{63} $$
+$$Precision = \frac{1}{4}\left(0.67+0.6+0.33+0\right)= 0.4$$
+
+$$Recall = \frac{1}{4}\left(0.5+0.75+0.25+0\right)= 0.38$$
+
+$$F1 = \frac{1}{4}\left(0.57+0.67+0.29+0\right)= 0.38$$
 
 \textbf{class frequency:}
 
-Because we only have two classes and both have a freq of 0.5 the results are the same as with the class balance.
+$$Jacc = \frac{1}{12}\left(0.4*4+0.5*4+0.17*4+0\right)$$
+$$Jacc = \frac{1}{12}\left(0.4*4+0.5*4+0.17*4\right)$$
+$$Jacc = \frac{1}{12}\times{4} \left(0.4+0.5+0.17\right)$$
+$$Jacc = \frac{1}{3} \left(0.4+0.5+0.17\right) = 0.36$$
+
+$$Precision = \frac {1}{3}\left(0.67+0.6+0.33\right)= 0.53$$
+
+$$Recall = 0.5+0.75+0.25 / 3= 0.5$$
+
+$$F1 = 0.57+0.67+0.29 / 3= 0.51$$
+
 
 \textbf{exact match:}
 $$ ExMatch = \frac{\#correct Instances}{\# instances} = \frac{2}{8} = 0.25 $$
 
 \paragraph{Questions\\}
 
-\textbf{1. Intuitively the Exact Match would be the strictest metric possible. However,it might not be the lowest number: how come?\\}
-Because the absolute values of these metrics are not comparable. A value of 1 in the jaccard metric does not mean the same as a $F1$ value of 1
+\textbf{1. Intuitively the Exact Match would be the strictest metric possible. However,it is not be the lowest number: how come?\\}
+In this example, the exact match had the lowest value.
 
 \textbf{2. Can you compute the global accuracy on this example? Justify your answer.\\}
+The global accuracy can be calculated by taking the average of the individual class instance accuracies and taking into account the class imablances.
+By averaging accuracies with respect to class frequencies (micro averaging ) produces the global accuracy of the system. Calculated above as 0.46
 
 \textbf{3. What is the main issue going from multi-class to multi-label setting?\\}
-In a multi-class setting a prediction is either  correct of not. In a multi-label setting we can have partially correct labels. Under these conditions we need different definition for the metrics.
+In a multi-class setting a prediction is either  correct of not. In a multi-label setting we can have partially correct labels.
+Under these conditions we need different definition for the metrics.
 
    
 \end{document}
