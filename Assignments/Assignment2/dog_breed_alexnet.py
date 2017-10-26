@@ -55,10 +55,10 @@ IMG_PATH = 'Data/dogs/'
 IMG_EXT = '.jpg'
 TRAIN_DATA = 'Data/labels.csv'
 epochs = 25
-do_transfer_learning = False
+do_transfer_learning = True
 
 transformations = transforms.Compose([transforms.RandomSizedCrop(224), transforms.ToTensor(),
-                                      #transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+                                      transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
                                       ])
 
 dog_dataset = DogsDataset(TRAIN_DATA, IMG_PATH, IMG_EXT, transformations)
@@ -68,7 +68,7 @@ _, test_index = next(StratifiedShuffleSplit(n_splits=1, test_size=0.2, random_st
 train_index, validation_index = next(StratifiedShuffleSplit(n_splits=1, test_size=0.125, random_state=78547820).split(np.zeros(len(_)), dog_dataset.y_train[_]))
 
 # define dataloaders
-train_loader = DataLoader(dog_dataset,batch_size=50,  num_workers=1, pin_memory=True)
+train_loader = DataLoader(dog_dataset,batch_size=50, sampler=SubsetRandomSampler(train_index),  num_workers=1, pin_memory=True)
 validation_loader = DataLoader(dog_dataset,batch_size=50, sampler=SubsetRandomSampler(validation_index), num_workers=1, pin_memory=True)
 test_loader = DataLoader(dog_dataset,batch_size=50, sampler=SubsetRandomSampler(test_index), num_workers=1, pin_memory=True)
 
@@ -89,7 +89,7 @@ model = model.cuda()
 # define loss function, etc.
 
 criterion = nn.CrossEntropyLoss()
-optimizer = optim.Adam(model.parameters(), lr=0.001)
+optimizer = optim.SGD(model.parameters(), lr=0.001)
 
 best_acc = 0
 for epoch in range(10):
