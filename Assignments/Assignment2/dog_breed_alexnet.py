@@ -64,9 +64,27 @@ transformations = transforms.Compose([transforms.RandomSizedCrop(224), transform
 dog_dataset = DogsDataset(TRAIN_DATA, IMG_PATH, IMG_EXT, transformations)
 
 # get stratified indixes
-_, test_index = next(StratifiedShuffleSplit(n_splits=1, test_size=0.2, random_state=92748301).split(np.zeros(len(dog_dataset.y_train)), dog_dataset.y_train))
+'''_, test_index = next(StratifiedShuffleSplit(n_splits=1, test_size=0.2, random_state=92748301).split(np.zeros(len(dog_dataset.y_train)), dog_dataset.y_train))
 train_index, validation_index = next(StratifiedShuffleSplit(n_splits=1, test_size=0.125, random_state=78547820).split(np.zeros(len(_)), dog_dataset.y_train[_]))
+'''
 
+def make_stratified_splits(D_in :DogsDataset):
+    X = D_in.X_train
+    y = D_in.y_train
+    test_straf = StratifiedShuffleSplit(n_splits=1, test_size= 0.2, train_size=0.8, random_state=4456)
+    
+    train_straf = StratifiedShuffleSplit(n_splits=1, test_size= 0.125,train_size=0.875,  random_state=58778)
+    rest_index, test_index = next(test_straf.split(X, y))
+    #print("rest:", X[rest_index], "\nTEST:", X[test_index])
+  
+    train_index, val_index =next( train_straf.split(X[rest_index], y[rest_index]))
+    #print("train:", X[train_index], "\nval:", X[val_index])
+    
+    # we can equiv also retrn these indexes for the random sampler to do its job 
+    #print(test_index,train_index,val_index)
+    return (train_index,val_index,test_index)
+
+train_index, val_index, test_index = make_stratified_splits(dog_dataset)
 # define dataloaders
 train_loader = DataLoader(dog_dataset,batch_size=50, sampler=SubsetRandomSampler(train_index),  num_workers=1, pin_memory=True)
 validation_loader = DataLoader(dog_dataset,batch_size=50, sampler=SubsetRandomSampler(validation_index), num_workers=1, pin_memory=True)
