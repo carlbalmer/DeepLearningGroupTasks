@@ -107,7 +107,8 @@ def train_model(model, criterion, optimizer, scheduler, num_epochs=25):
     print('Training complete in {:.0f}m {:.0f}s'.format(
         time_elapsed // 60, time_elapsed % 60))
     print('Best val Acc: {:4f}'.format(best_acc))
-    print('test Acc: {:4f}'.format(test_acc))
+    if report_test_acc:
+        print('test Acc: {:4f}'.format(test_acc))
 
     # load best model weights
     model.load_state_dict(best_model_wts)
@@ -122,6 +123,7 @@ epochs = 50
 
 use_gpu = torch.cuda.is_available()
 do_transfer_learning = False
+report_test_acc = False
 
 # downloaded the data to my computer as i could not find it on the server
 image_path = 'Data/dogs/'
@@ -143,9 +145,9 @@ le = LabelEncoder()
 labels = le.fit_transform(labels)
 
 # stratify and split the dataset
-_, test_index = next(StratifiedShuffleSplit(n_splits=1, test_size=0.2).split(np.zeros(len(labels)), labels))
+_, test_index = next(StratifiedShuffleSplit(n_splits=1, test_size=0.2, random_state=92748301).split(np.zeros(len(labels)), labels))
 train_index, validation_index = next(
-    StratifiedShuffleSplit(n_splits=1, test_size=0.125).split(np.zeros(len(_)), labels[_]))
+    StratifiedShuffleSplit(n_splits=1, test_size=0.125, random_state=78547820).split(np.zeros(len(_)), labels[_]))
 
 transformations = transforms.Compose([transforms.RandomSizedCrop(224), transforms.RandomHorizontalFlip(), transforms.ToTensor(), transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])])
 
