@@ -1,194 +1,169 @@
-import csv
-
+import pandas as pd
 import numpy as np
 import time
 import torch
-import torch.nn as nn
-import torch.optim as optim
-import torchvision.models as models
-import torchvision.transforms as transforms
+import torchvision
 from PIL import Image
 from sklearn.model_selection import StratifiedShuffleSplit
 from sklearn.preprocessing import LabelEncoder
+from torch import nn, optim
 from torch.autograd import Variable
-from torch.optim import lr_scheduler
-from torch.utils.data import Dataset
+from torch.utils.data import Dataset, DataLoader
+from torch.utils.data.sampler import SubsetRandomSampler
+from torchvision import transforms, models
 
 
-class DogDataset(Dataset):
-    def __init__(self, breeds, filenames, root_dir, transform=None):
-        self.breeds = breeds
-        self.filenames = filenames
-        self.root_dir = root_dir
+class DogsDataset(Dataset):
+    """Dataset
+    Arguments:
+        A CSV file path
+        Path to image folder
+        Extension of images
+        PIL transforms
+    """
+
+    def __init__(self, csv_path, img_path, img_ext, transform=None):
+        tmp_df = pd.read_csv(csv_path)
+        # print(tmp_df)
+        # assert tmp_df['breed'].apply(lambda x: os.path.isfile(img_path + x + img_ext)).all(), \
+        # "Some images referenced in the CSV file were not found"
+
+        self.mlb = LabelEncoder()
+        self.img_path = img_path
+        self.img_ext = img_ext
         self.transform = transform
 
+        self.X_train = tmp_df['id']
+        self.y_train = self.mlb.fit_transform(tmp_df['breed'])  # having problem shaping it in the right size
+
+        # print(self.y_train[0])
+
+    def __getitem__(self, index):
+        img = Image.open(self.img_path + self.X_train[index] + self.img_ext)
+        img = img.convert('RGB')
+        if self.transform is not None:
+            img = self.transform(img)
+
+        label = (self.y_train[index])
+        return img, label
+
     def __len__(self):
-        return len(self.breeds)
-
-    def __getitem__(self, idx):
-        image = Image.open(self.root_dir + '/' + IDs[idx] + '.jpg')
-        target = self.breeds[idx]
-
-        if self.transform:
-            image = self.transform(image)
-
-        return image, target
+        return len(self.X_train.index)
 
 
-def train_model(model, criterion, optimizer, scheduler, num_epochs=25):
-    since = time.time()
+IMG_PATH = 'Data/dogs/'
+IMG_EXT = '.jpg'
+TRAIN_DATA = 'Data/labels.csv'
+epochs = 25
+do_transfer_learning = True
 
-    best_model_wts = model.state_dict()
-    best_acc = 0.0
-    test_acc = 0.0
+transformations = transforms.Compose([transforms.RandomSizedCrop(224), transforms.ToTensor(),
+                                      transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+                                      ])
 
-    for epoch in range(num_epochs):
-        print('Epoch {}/{}'.format(epoch, num_epochs - 1))
-        print('-' * 10)
+dog_dataset = DogsDataset(TRAIN_DATA, IMG_PATH, IMG_EXT, transformations)
 
-        # Each epoch has a training and validation phase
-        for phase in ['train', 'val', 'test']:
-            if phase == 'test' and epoch != num_epochs-1:
-                break;
-            if phase == 'train':
-                scheduler.step()
-                model.train(True)  # Set model to training mode
-            else:
-                model.train(False)  # Set model to evaluate mode
+# get stratified indixes
+'''_, test_index = next(StratifiedShuffleSplit(n_splits=1, test_size=0.2, random_state=92748301).split(np.zeros(len(dog_dataset.y_train)), dog_dataset.y_train))
+train_index, validation_index = next(StratifiedShuffleSplit(n_splits=1, test_size=0.125, random_state=78547820).split(np.zeros(len(_)), dog_dataset.y_train[_]))
+'''
 
-            running_loss = 0.0
-            running_corrects = 0
+def make_stratified_splits(D_in :DogsDataset):
+    X = D_in.X_train
+    y = D_in.y_train
+    test_straf = StratifiedShuffleSplit(n_splits=1, test_size= 0.2, train_size=0.8, random_state=4456)
+    
+    train_straf = StratifiedShuffleSplit(n_splits=1, test_size= 0.125,train_size=0.875,  random_state=58778)
+    rest_index, test_index = next(test_straf.split(X, y))
+    #print("rest:", X[rest_index], "\nTEST:", X[test_index])
+  
+    train_index, val_index =next( train_straf.split(X[rest_index], y[rest_index]))
+    #print("train:", X[train_index], "\nval:", X[val_index])
+    
+    # we can equiv also retrn these indexes for the random sampler to do its job 
+    #print(test_index,train_index,val_index)
+    return (train_index,val_index,test_index)
 
-            # Iterate over data.
-            for data in dataloders[phase]:
-                # get the inputs
-                inputs, labels = data
-
-                # wrap them in Variable
-                if use_gpu:
-                    inputs = Variable(inputs.cuda())
-                    labels = Variable(labels.cuda())
-                else:
-                    inputs, labels = Variable(inputs), Variable(labels)
-
-                # zero the parameter gradients
-                optimizer.zero_grad()
-
-                # forward
-                outputs = model(inputs)
-                _, preds = torch.max(outputs.data, 1)
-                loss = criterion(outputs, labels)
-
-                # backward + optimize only if in training phase
-                if phase == 'train':
-                    loss.backward()
-                    optimizer.step()
-
-                # statistics
-                running_loss += loss.data[0]
-                running_corrects += torch.sum(preds == labels.data)
-
-            epoch_loss = running_loss / len(datasets[phase])
-            epoch_acc = running_corrects / len(datasets[phase])
-
-            print('{} Loss: {:.4f} Acc: {:.4f}'.format(
-                phase, epoch_loss, epoch_acc))
-
-            # deep copy the model
-            if phase == 'val' and epoch_acc > best_acc:
-                best_acc = epoch_acc
-                best_model_wts = model.state_dict()
-            if phase == 'test':
-                test_acc = epoch_acc
-
-        print()
-
-    time_elapsed = time.time() - since
-    print('Training complete in {:.0f}m {:.0f}s'.format(
-        time_elapsed // 60, time_elapsed % 60))
-    print('Best val Acc: {:4f}'.format(best_acc))
-    if report_test_acc:
-        print('test Acc: {:4f}'.format(test_acc))
-
-    # load best model weights
-    model.load_state_dict(best_model_wts)
-    return model
-
-
-# parameters
-
-batch_size = 5
-workers = 8
-epochs = 50
-
-use_gpu = torch.cuda.is_available()
-do_transfer_learning = False
-report_test_acc = False
-
-# downloaded the data to my computer as i could not find it on the server
-image_path = 'Data/dogs/'
-label_path = 'Data/labels.csv'
-
-labels = []
-IDs = []
-
-# load labels
-with open(label_path) as csv_file:
-    for rows in csv.reader(csv_file):
-        IDs.append(rows[0])
-        labels.append(rows[1])
-del IDs[0], labels[0]
-IDs = np.array(IDs)
-
-# encode labels into integers
-le = LabelEncoder()
-labels = le.fit_transform(labels)
-
-# stratify and split the dataset
-_, test_index = next(StratifiedShuffleSplit(n_splits=1, test_size=0.2, random_state=92748301).split(np.zeros(len(labels)), labels))
-train_index, validation_index = next(
-    StratifiedShuffleSplit(n_splits=1, test_size=0.125, random_state=78547820).split(np.zeros(len(_)), labels[_]))
-
-transformations = transforms.Compose([transforms.RandomSizedCrop(224), transforms.RandomHorizontalFlip(), transforms.ToTensor(), transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])])
-
-# create datasets
-train_dataset = DogDataset(breeds=labels[train_index], filenames=IDs[train_index], root_dir=image_path, transform=transformations)
-validation_dataset = DogDataset(breeds=labels[validation_index], filenames=IDs[validation_index], root_dir=image_path, transform=transformations)
-test_dataset = DogDataset(breeds=labels[test_index], filenames=IDs[test_index], root_dir=image_path, transform=transformations)
-
-datasets = {'train': train_dataset, 'val': validation_dataset, 'test':test_dataset}
-
-# create loaders
-
-train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=workers, pin_memory=True)
-validation_loader = torch.utils.data.DataLoader(validation_dataset, batch_size=batch_size, shuffle=True, num_workers=workers, pin_memory=True)
-test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=batch_size, shuffle=True, num_workers=workers, pin_memory=True)
-
-dataloders = {'train': train_loader, 'val': validation_loader, 'test': test_loader}
+train_index, val_index, test_index = make_stratified_splits(dog_dataset)
+# define dataloaders
+train_loader = DataLoader(dog_dataset,batch_size=50, sampler=SubsetRandomSampler(train_index),  num_workers=1, pin_memory=True)
+validation_loader = DataLoader(dog_dataset,batch_size=50, sampler=SubsetRandomSampler(validation_index), num_workers=1, pin_memory=True)
+test_loader = DataLoader(dog_dataset,batch_size=50, sampler=SubsetRandomSampler(test_index), num_workers=1, pin_memory=True)
 
 # create models and change fc layer
 alexnet_pretrained = models.alexnet(pretrained=True)
 num_ftrs = alexnet_pretrained.classifier._modules['6'].in_features
 alexnet_pretrained.classifier._modules['6'] = nn.Linear(num_ftrs, 120)
 
-alexnet = models.alexnet()
-alexnet.classifier._modules['6'] = nn.Linear(num_ftrs, 120)
+alexnet = models.alexnet(num_classes=120)
 
 model = alexnet
 
 if do_transfer_learning:
     model = alexnet_pretrained
 
-if use_gpu:
-    model = model.cuda()
+model = model.cuda()
 
 # define loss function, etc.
 
 criterion = nn.CrossEntropyLoss()
-optimizer_ft = optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
-exp_lr_scheduler = lr_scheduler.StepLR(optimizer_ft, step_size=7, gamma=0.1)
+optimizer = optim.SGD(model.parameters(), lr=0.001)
 
+best_acc = 0
+for epoch in range(10):
+    model.train(True)
+    running_corrects = 0
+    for batch_idx, (data, target) in enumerate(train_loader):
+        # data, target = data.cuda(async=True), target.cuda(async=True) # On GPU
+        data, target = Variable(data.cuda()), Variable(target.long().cuda())
 
-model = train_model(model, criterion, optimizer_ft, exp_lr_scheduler,
-                       num_epochs=epochs)
+        optimizer.zero_grad()
+        output = model(data)
+        # print( output.size(), target.data)
+        loss = criterion(output, target)
+        loss.backward()
+        optimizer.step()
 
+        _, preds = torch.max(output.data, 1)
+        running_corrects += torch.sum(preds == target.data)
+
+        if batch_idx % 10 == 0:
+            print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
+                epoch, batch_idx * len(data), len(train_loader.dataset),
+                       100. * batch_idx / len(train_loader), loss.data[0]))
+
+    epoch_acc = running_corrects / len(train_index)
+    print('{} Acc: {:.4f}'.format(
+        'train',  epoch_acc))
+
+    model.train(False)
+    running_corrects = 0
+    for batch_idx, (data, target) in enumerate(validation_loader):
+        data, target = Variable(data.cuda()), Variable(target.long().cuda())
+        output = model(data)
+
+        _, preds = torch.max(output.data, 1)
+        running_corrects += torch.sum(preds == target.data)
+
+    epoch_acc = running_corrects / len(validation_index)
+    print('{} Acc: {:.4f}'.format(
+        'valid', epoch_acc))
+    if epoch_acc > best_acc:
+        best_acc = epoch_acc
+        best_model_wts = model.state_dict()
+
+print('Best val Acc: {:4f}'.format(best_acc))
+model.load_state_dict(best_model_wts)
+
+model.train(False)
+running_corrects = 0
+for batch_idx, (data, target) in enumerate(test_loader):
+    data, target = Variable(data.cuda()), Variable(target.long().cuda())
+    output = model(data)
+
+    _, preds = torch.max(output.data, 1)
+    running_corrects += torch.sum(preds == target.data)
+
+test_acc = running_corrects / len(test_index)
+
+print('Test Acc: {:4f}'.format(test_acc))
