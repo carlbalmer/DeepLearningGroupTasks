@@ -1,0 +1,6 @@
+Model, Test_ACC
+AlexNet pretrained, 60.5%
+AlexNet from scratch, 1%
+
+ResNet18 pretrained, 79%
+ResNet18 from scratch, 25.3%

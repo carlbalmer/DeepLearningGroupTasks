@@ -51,11 +51,12 @@ class DogsDataset(Dataset):
         return len(self.X_train.index)
 
 
-IMG_PATH = 'Data/dogs/'
+IMG_PATH = 'train/'
 IMG_EXT = '.jpg'
-TRAIN_DATA = 'Data/labels.csv'
-epochs = 25
-do_transfer_learning = True
+TRAIN_DATA = 'labels.csv'
+epochs = 50
+do_transfer_learning = False
+print("Transfer learning:" + str(do_transfer_learning))
 
 transformations = transforms.Compose([transforms.RandomSizedCrop(224), transforms.ToTensor(),
                                       transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
@@ -68,9 +69,9 @@ dog_dataset = DogsDataset(TRAIN_DATA, IMG_PATH, IMG_EXT, transformations)
 train_index, validation_index = next(StratifiedShuffleSplit(n_splits=1, test_size=0.125, random_state=78547820).split(np.zeros(len(_)), dog_dataset.y_train[_]))
 '''
 
-def make_stratified_splits(D_in :DogsDataset):
-    X = D_in.X_train
-    y = D_in.y_train
+def make_stratified_splits(dataset):
+    X = dataset.X_train
+    y = dataset.y_train
     test_straf = StratifiedShuffleSplit(n_splits=1, test_size= 0.2, train_size=0.8, random_state=4456)
     
     train_straf = StratifiedShuffleSplit(n_splits=1, test_size= 0.125,train_size=0.875,  random_state=58778)
@@ -84,33 +85,47 @@ def make_stratified_splits(D_in :DogsDataset):
     #print(test_index,train_index,val_index)
     return (train_index,val_index,test_index)
 
-train_index, val_index, test_index = make_stratified_splits(dog_dataset)
+train_index, validation_index, test_index = make_stratified_splits(dog_dataset)
 # define dataloaders
-train_loader = DataLoader(dog_dataset,batch_size=50, sampler=SubsetRandomSampler(train_index),  num_workers=1, pin_memory=True)
+train_loader = DataLoader(dog_dataset,batch_size=50,
+                          sampler=SubsetRandomSampler(train_index),
+                          num_workers=1, pin_memory=True)
 validation_loader = DataLoader(dog_dataset,batch_size=50, sampler=SubsetRandomSampler(validation_index), num_workers=1, pin_memory=True)
 test_loader = DataLoader(dog_dataset,batch_size=50, sampler=SubsetRandomSampler(test_index), num_workers=1, pin_memory=True)
 
 # create models and change fc layer
-alexnet_pretrained = models.alexnet(pretrained=True)
-num_ftrs = alexnet_pretrained.classifier._modules['6'].in_features
-alexnet_pretrained.classifier._modules['6'] = nn.Linear(num_ftrs, 120)
+#alexnet_pretrained = models.alexnet(pretrained=True)
+#num_ftrs = alexnet_pretrained.classifier._modules['6'].in_features
+#alexnet_pretrained.classifier._modules['6'] = nn.Linear(num_ftrs, 120)
 
-alexnet = models.alexnet(num_classes=120)
+#alexnet = models.alexnet(num_classes=120)
 
-model = alexnet
+#model = alexnet
 
-if do_transfer_learning:
-    model = alexnet_pretrained
+#if do_transfer_learning:
+#    model = alexnet_pretrained
+
+# make the net
+model = torchvision.models.resnet18(pretrained=do_transfer_learning)
+num_ftrs = model.fc.in_features
+model.fc = nn.Linear(num_ftrs, 120)
+
+model = model.cuda()
+
+criterion = nn.CrossEntropyLoss()
+optimizer = optim.SGD(model.parameters(), lr=1e-2, momentum=0.9)
+
+
 
 model = model.cuda()
 
 # define loss function, etc.
 
-criterion = nn.CrossEntropyLoss()
-optimizer = optim.SGD(model.parameters(), lr=0.001)
+#criterion = nn.CrossEntropyLoss()
+#optimizer = optim.SGD(model.parameters(), lr=0.001)
 
 best_acc = 0
-for epoch in range(10):
+for epoch in range(epochs):
     model.train(True)
     running_corrects = 0
     for batch_idx, (data, target) in enumerate(train_loader):
