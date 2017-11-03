@@ -54,7 +54,7 @@ class DogsDataset(Dataset):
 IMG_PATH = 'train/'
 IMG_EXT = '.jpg'
 TRAIN_DATA = 'labels.csv'
-epochs = 50
+epochs = 100
 do_transfer_learning = False
 print("Transfer learning:" + str(do_transfer_learning))
 
@@ -169,6 +169,8 @@ for epoch in range(epochs):
 
 print('Best val Acc: {:4f}'.format(best_acc))
 model.load_state_dict(best_model_wts)
+torch.save(model.state_dict(),'mytraining.pt')
+# to load a model use : model.load_state_dict(torch.load('mytraining.pt'))
 
 model.train(False)
 running_corrects = 0
