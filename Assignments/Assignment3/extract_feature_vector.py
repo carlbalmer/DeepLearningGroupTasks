@@ -1,3 +1,6 @@
+import csv
+import pickle
+
 from torch.autograd import Variable
 from torch.utils.data import DataLoader
 from torch.utils.data.sampler import SubsetRandomSampler
@@ -30,18 +33,29 @@ model = model.cuda()
 
 # load weights
 model.load_state_dict(torch.load('transfer_model.pt'))
+model.eval()
 
 feature_vectors = []
-labels = []
+nbr_correct = 0
+nbr_incorrect = 0
 for data in test_loader:
     image, target = Variable(data[0].cuda()), Variable(data[1].cuda())
     output = model(image)
-    feature_vectors.append(output.data.cpu().numpy())
-    labels.append(target.data.cpu().numpy())
-    if len(feature_vectors) > 20:
-        break
-    #_, preds = torch.max(output.data, 1)
-    #running_corrects += torch.sum(preds == target.data)
 
-#test_acc = running_corrects / len(test_index)
-print(feature_vectors)
+    if nbr_incorrect == nbr_correct >= 10:
+        break
+    elif (torch.max(output.data, 1)[1] == target.data).all() and nbr_correct < 10:
+        nbr_correct += 1
+    elif not (torch.max(output.data, 1)[1] == target.data).all() and nbr_incorrect < 10:
+        nbr_incorrect += 1
+    else:
+        continue
+
+    feature_vectors.append({'features': output.data.cpu().numpy(),
+                            "encoded_label": target.data.cpu().cpu().numpy(),
+                            "text_label": dog_dataset.mlb.inverse_transform(target.data.cpu().cpu().numpy()),
+                            "correctly_classified": (torch.max(output.data, 1)[1] == target.data).all(),
+                            })
+
+pickle.dump(feature_vectors, open("feature_vectors.pkl",'wb'))
+# load with  feature_vectors = pickle.load(open("feature_vectors.pkl", 'rb'))
