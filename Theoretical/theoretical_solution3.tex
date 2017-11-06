@@ -1,0 +1,40 @@
+\documentclass[10pt]{article}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\begin{document}
+\section{Theoretical Exercise}
+\subsection{Advantage t-SNE over PCA}
+Intuitively PCA can be thought of fitting a n-dimensional ellipsoid on to the data, where each axis represents a principal component. If an axis is small, then it would only contain a small amount of variance; That means by omitting this axis only a small amount of information is lost. So in general the problem is to find the axis, which contain the most variance of the data and to project the data on them, or in other words omit the axis with the least amount of variance. \\ To ensure that goal, PCA tries to maximize the variance of the projected data and by that concerns itself with large pairwise distances (because that what explains the variance), so that means dissimilar data-points end up far in the projection.
+There are several problems with PCA: first of all if the number of dimensions is high, there might be no single dimensions, which explain most of the variance between points (Normally the variance of data-points can explained with the variance in one dimension), so there is no dominant principal component to project unto. Furthermore it mainly wants to preserve large distances, which may not be the most reliable metric.
+\\T-sne tries to solve this problem by preserving the local structure while projecting : By focusing more on locality it also doesn't suffer as much from a high number of dimensions.
+
+\subsection{T-SNE optimization}
+The function that T-SNE tries to optimize is a KL-divergence of 2 probabilities :
+L = $\sum_{i \neq j} p_ {ij} log(\frac{p_{ij}}{q_{ij}}$
+
+So in order to get a grasp of the loss function, one needs to understand the two probabilities. Intuitively p$_{ij}$  ( which can be measured as the conditional probability p$_{j|i}$ ) is a measure how similar two data-points x$_j$ and x$_i$ are (more precisely the probability that the latter would choose the former as its neighbour  if neighbours were picked in proportion to their probability density under a Gaussian centred at it). Similarly q$_{ij}$ can be defined as probability of the same two data points being neighbours in the low dimensional space. The assumptions are in both cases that neighbour selection is done via a gaussian centred at x$_i$
+\subsection{Three points problem}
+If a and b are close then p$_{ab}$ is high and p$_{ac}$ and p$_{bc}$ are both low. Let's say p$_{ab}=0.8,p_{ba}=0.8,p_{ac}=0.2=p_{ca},p_{bc}=0.1=p_{cb}$ and $q_{ab}=0.8=q_{ba}=q_{ac}=q_{ca}=q_{bc}=q_{cb}$, then the KL-divergence is $p_{ab}*log(/frac{p_{ab}}{q_{ab}})+p_{ba}*log(/frac{p_{ba}}{q_{ba}})+p_{ac}*log(/frac{p_{ac}}{q_{ac}})+p_{ca}*log(/frac{p_{ca}}{q_{ca}})+p_{bc}*log(/frac{p_{bc}}{q_{bc}})+p_{cb}*log(/frac{p_{cb}}{q_{cb}})$
+\\
+\\
+=$2*0.8*log(\frac{0.8}{0.8})+2*0.2*log(\frac{0.2}{0.8})+2*0.1*log(\frac{0.1}{0.8})$= -0.421
+
+
+If c is far away from a, consider q$_{ac}=0.2=q_{ca}$ and q$_{bc}=0.1=q_{cb}$
+
+Then the calculation yields:
+$2*0.8*log(1)+2*0.2*log(1)+2*0.1*log(1)$
+=0
+
+ If everyone is far away consider al q's to be 0.1 which yields
+$2*0.8*log(8)+2*0.2*log(2)+2*0.1*log(1)$
+=  1.565
+
+
+If a is far away from both a and c and b and c are close to another, consider
+q$_{ab}=0.1=q_{ba}=q_{ac}=q_{ca},q{bc}=0.8=q_{cb}$
+, then the calculation is 
+$2*0.8*log(8)+2*0.2*log(2)+2*0.1*log(0.125)$=1.384
+\end{document}
