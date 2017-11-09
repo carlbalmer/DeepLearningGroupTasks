@@ -19,15 +19,18 @@ class MnistModel(nn.Module):
         # padding=1 for same padding(if kernel is 2*2)
         #meaning 3 shd be 2?
         self.conv2 = nn.Conv2d(64, 32, 2, padding=1,stride=1)
-        # feature map size is 12*12 by pooling -> (13-2+2*1) = 13*13 which is the effect of same
+        # feature map size is 12*12 by pooling -> (13-2+2*1/1) = 13*13 which is the effect of same
         #meaning fc1 shoud be built on 13*13?
         self.fc1 = nn.Linear(32 * 13 * 13, 256)
         self.fc2 = nn.Linear(256, 10)
 
     def forward(self, x):
         x = F.relu(self.conv1(x))
+        
         x = F.relu(self.conv2(x))
+        
         x= F.max_pool2d(x,2,stride=1)
+        
         x = F.dropout(x,p=0.35)
         x = x.view(-1,5408)  # reshape Variable
 
@@ -50,7 +53,7 @@ test_loader = torch.utils.data.DataLoader(
 
 
 for p in model.parameters():
-    print(p.size())
+    print('parameters ',p.size())
 
 
 # optimizers = ["op1","op2","op3"]
@@ -66,9 +69,10 @@ for name, optimizer in optimizers.items():
     for epoch in range(10):
         for data, target in train_loader:
             data, target = (Variable(data), Variable(target)) if not torch.cuda.is_available() else (Variable(data).cuda(), Variable(target).cuda()) # use cuda if available
+            
             optimizer.zero_grad()
             output = model(data)
-
+            print(output.size() ,target.size())
             loss = F.cross_entropy(output, target)
             loss.backward()    # calc gradients
             train_loss.append(loss.data[0])
