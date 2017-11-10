@@ -70,4 +70,5 @@ for name in names1 :
     count += 1
 #plt.legend(numpoints=1)
     ax.axis('tight')
+    ax1.axis('tight')
 plt.show()
