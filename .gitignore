@@ -8,6 +8,16 @@ __pycache__/
 # C extensions
 *.so
 
+#my ignred files
+Assignments/Assignment1/data/
+Assignments/Assignment3/feature_vectors_120.pkl
+Assignments/Assignment3/labels.csv
+Assignments/Assignment3/test/
+Assignments/Assignment3/train/
+CapsNet/
+pytorch-capsule/
+
+
 # Distribution / packaging
 .Python
 env/
