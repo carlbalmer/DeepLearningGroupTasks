@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.init as init
-import SExpLogFunction
+from . import SExpLogFunction
 
 
 class SExpLog(nn.Module):
@@ -17,6 +17,8 @@ class SExpLog(nn.Module):
         #initialize alphas with one
         init.constant(self.alphas,1.0)
 
+    #we dont need to pass alphas, but to have option to check the grads of the weights, we pass
+    #alphas dont come from the top, its internal
     def forward(self,input):
         return SExpLogFunction.apply(self.input_feautures,self.alphas)
 
