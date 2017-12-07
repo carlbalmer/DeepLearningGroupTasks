@@ -1,7 +1,7 @@
 import torch.nn as nn
-import Maxout as Maxout
 import torch.nn.functional as F
 
+from VDL_template.model import Maxout as Maxout
 
 
 class DiabeticModel(nn.Module):
@@ -59,7 +59,7 @@ class DiabeticModel(nn.Module):
 
         self.fc = nn.Sequential()
         self.fc.add_module("fc1",nn.Linear(2048,400))
-        self.fc.add_module("maxout",Maxout(400,200,2))
+        self.fc.add_module("maxout", Maxout(400, 200, 2))
         self.fc.add_module("dropout6",nn.Dropout(p=0.5))
         self.fc.add_module("fc2",nn.Linear(400,400))
         self.fc.add_module("maxout", Maxout(400, 200, 2))
