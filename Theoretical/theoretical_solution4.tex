@@ -19,7 +19,18 @@ $n^2+kn+nm$, where n is the dimension of the hidden layer, k is the dimension of
 Since the number of parameters is shared by all the steps of the RNN, the number of parameters stays the same.
 
 \subsection{Task 2}
-The problem is with the
+\subsubsection{Question 1}
+The problem is with vanishing gradients; to model long term dependencies the back propagation step in the training has to go through many time steps to adjust the weights at the initial time steps. Since, according to the chain rule, the back propagation involves multiplying many gradients which can lead to a gradient, which can tend to zero. A near zero gradient, however is very suboptimal for the gradient step. 
+\subsubsection{Question 2}
+
+
+\subsection{LSTM Task 1 }
+\subsubsection{Question 1}
+Gates are a way to optionally let information through; by allowing to let this happen LSTM combat the problem that RNN encountered when modelling long term dependencies. 
+\subsubsection{Question 2}
+To update the old cell state to the new state following transition is computed : 
+
+$C_t = f_t * C_{t-1}+i_t * \widetilde{C_t}$. If the forgot gate is zero, only the new candidate values are considered by the weight $i_t$
 
 
 
