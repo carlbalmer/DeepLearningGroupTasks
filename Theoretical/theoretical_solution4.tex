@@ -32,6 +32,17 @@ To update the old cell state to the new state following transition is computed :
 
 $C_t = f_t * C_{t-1}+i_t * \widetilde{C_t}$. If the forgot gate is zero, only the new candidate values are considered by the weight $i_t$
 
+\subsubsection{Question 3}
+LSTM solves the vanishing gradient problem through the gating mechanism; it allows the information to directly pass through (mathematically this means applying an identity function over the inputs and because the gradient of the identity function is 1, the problem of vanishing is reduced by a huge margin)
+
+Another way to look at it is : \\
+n the recurrency of the LSTM the activation function is the identity function with a derivative of 1.0. So, the backpropagated gradient neither vanishes or explodes when passing through, but remains constant.
+The effective weight of the recurrency is equal to the forget gate activation. So, if the forget gate is on (activation close to 1.0), then the gradient does not vanish. Since the forget gate activation is never greater than 1.0, the gradient can't explode either.
+So that's why LSTM is so good at learning long range dependencies. 
+
+\subsubsection{Question 4}
+A standard LSTM has 3 gates; namely input,forget and output gate which introduce a lot of parameters and make training quite a hassle.
+One way to reduce the parameters in the LSTM is by simplified gating which was introduced by GRUs. Instead of having two gates, they consider two gates (namely update and reset gate) (needs more)
 
 
 \end{document}
