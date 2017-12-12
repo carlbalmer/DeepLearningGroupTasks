@@ -22,7 +22,11 @@ Since the number of parameters is shared by all the steps of the RNN, the number
 \subsubsection{Question 1}
 The problem is with vanishing gradients; to model long term dependencies the back propagation step in the training has to go through many time steps to adjust the weights at the initial time steps. Since, according to the chain rule, the back propagation involves multiplying many gradients which can lead to a gradient, which can tend to zero. A near zero gradient, however is very suboptimal for the gradient step. 
 \subsubsection{Question 2}
+\paragraph{Bi-directional} Can lable elements of a sequence based on past and future elements by processing the input in both directions.
 
+\paragraph{LSTM \& GRU} Can avoid the vanishing gradiend problem using gates. See next task.
+
+\paragraph{Second order RNN} Use higher order weights ($w_[ijk]$ instead of $w_[ij]$) to allow a direct mapping to a finite state machine concearning training, stability and reprsentation.
 
 \subsection{LSTM Task 1 }
 \subsubsection{Question 1}
@@ -42,7 +46,12 @@ So that's why LSTM is so good at learning long range dependencies.
 
 \subsubsection{Question 4}
 A standard LSTM has 3 gates; namely input,forget and output gate which introduce a lot of parameters and make training quite a hassle.
-One way to reduce the parameters in the LSTM is by simplified gating which was introduced by GRUs. Instead of having two gates, they consider two gates (namely update and reset gate) (needs more)
+One way to reduce the parameters in the LSTM is by simplified gating which was introduced by GRUs. Instead of having two gates, the forget and input gates are combined into a update gate.
+
+\subsubsection{Question 5}
+In a normal LSTM (or generally RNN) we have the limitation, that future information can not be accessed from the current state (because the input is read as a sequence). Bidirectional LSTMs process the input in both directions. This is done by connecting two hidden layers of opposite directions to the same output. This way the output layer can get information from the past and future of the sequence.
+
+As I understand it bidirectional RNN are limited to input sequences of finite length (because we cant start at the end of the sewuence if it is infinite).
 
 
 \end{document}
