@@ -133,7 +133,7 @@ def main():
     logging.info('Model {} expects input size of {}'.format(args.model,
                                                             model_expected_input_size))
 
-    train_ds = dataset.__dict__[args.dataset](root='.data/',
+    train_ds = dataset.__dict__[args.dataset](root='data/datasets',
                                               train=True,
                                               download=True)
 
@@ -143,7 +143,7 @@ def main():
         transforms.Normalize(mean=train_ds.mean, std=train_ds.std)
     ])
 
-    test_ds = dataset.__dict__[args.dataset](root='.data/',
+    test_ds = dataset.__dict__[args.dataset](root='data/datasets',
                                              train=False,
                                              download=True)
 
