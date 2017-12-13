@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.init as init
 
-from . import SExpLogFunction
+from util import SExpLogFunction
 
 
 class SExpLog(nn.Module):
