@@ -4,8 +4,6 @@ CNN with 3 conv layers and a fully connected classification layer
 import torch
 import torch.nn as nn
 
-from model.aSExpLog import aSExpLog
-
 
 class Sexy_CNN_Basic(nn.Module):
     """
@@ -34,8 +32,7 @@ class Sexy_CNN_Basic(nn.Module):
             nn.Softsign()
         )
         # Polling layer
-        self.pool1 = nn.AvgPool2d(3)
-        self.alpha = nn.Parameter(torch.ones(1, 1))
+        self.pool1, self.alpha = self.init_sexplog(3)
 
         # Third layer
         self.conv3 = nn.Sequential(
@@ -58,8 +55,15 @@ class Sexy_CNN_Basic(nn.Module):
         """
         x = self.conv1(x)
         x = self.conv2(x)
-        x = self.pool1(self.alpha.mul(x).exp()).log().mul(self.alpha.pow(-1))
+        x = self.sexplog(x)
         x = self.conv3(x)
         x = x.view(x.size(0), -1)
         x = self.fc(x)
         return x
+
+    @staticmethod
+    def init_sexplog(kernel_size):
+        return nn.AvgPool2d(kernel_size), nn.Parameter(torch.ones(1, 1))
+
+    def sexplog(self, input_tensor):
+        return self.pool1(self.alpha.mul(input_tensor).exp()).log().mul(self.alpha.pow(-1))
