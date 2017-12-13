@@ -181,9 +181,17 @@ def main():
 
     # Begin training
     logging.info('Begin training')
+    best_acc = 0
+    best_model = model.state_dict()
     for i in range(args.epochs):
-        validate(test_loader, model, criterion, i)
         train(train_loader, model, criterion, optimizer, i)
+        best_acc, best_model = validate(test_loader, model, criterion, i, best_acc, best_model)
+
+    logging.info('* Best Acc:{0}'.format(str(best_acc)))
+    logging.info('Saving best model')
+
+    model.load_state_dict(best_model)
+    torch.save(model.state_dict(), os.path.join(log_folder, 'best_model.pt'))
 
     logging.info('Training completed')
 
@@ -275,7 +283,7 @@ def train(train_loader, model, criterion, optimizer, epoch):
     return
 
 
-def validate(val_loader, model, criterion, epoch):
+def validate(val_loader, model, criterion, epoch, best_acc, best_model):
     """
     The validation routine
     :param val_loader:    torch.utils.data.DataLoader
@@ -346,10 +354,15 @@ def validate(val_loader, model, criterion, epoch):
     # Logging the epoch-wise accuracy
     writer.add_scalar('val/accuracy', top1.avg, epoch - 1)
 
-    print(' * Acc@1 {top1.avg:.3f} Acc@5 {top5.avg:.3f}'
+    logging.info(' * Acc@1 {top1.avg:.3f} Acc@5 {top5.avg:.3f}'
           .format(top1=top1, top5=top5))
+    logging.info(' * Alpha {alpha} Grad {grad}'
+          .format(alpha=float(model.module.alpha.data.mean()), grad=model.module.alpha._grad.data.mean() if model.module.alpha._grad is not None else 0))
 
-    return
+    if top1.avg >= best_acc:
+        best_acc = top1.avg
+        best_model = model.state_dict()
+    return best_acc, best_model
 
 
 if __name__ == "__main__":
