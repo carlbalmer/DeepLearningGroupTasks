@@ -8,6 +8,7 @@ import argparse
 import os
 
 from tqdm import tqdm
+import matplotlib.pyplot as plt
 
 from helpers import *
 from model import *
@@ -69,6 +70,39 @@ def save():
     torch.save(decoder, save_filename)
     print('Saved as %s' % save_filename)
 
+def make_plot(perplexity):
+    plt.figure(0)
+    plt.plot(perplexity)
+    plt.title("change in perplexity during training")
+    plt.ylabel('perplexity')
+    plt.xlabel('epoch')
+    plt.figure(1)
+    plt.plot(perplexity)
+    plt.title("change in perplexity during training")
+    plt.ylabel('perplexity')
+    plt.xlabel('epoch')
+    plt.ylim(0, 10)
+    plt.show()
+
+def print_strings():
+    print("Generating Strings", '\n')
+    print("Prime: iwncj", '\n')
+    print(generate(decoder, 'iwncj', 100, cuda=args.cuda), '\n')
+    print("Prime: to5 p", '\n')
+    print(generate(decoder, 'to5 p', 100, cuda=args.cuda), '\n')
+    print("Prime: vvmnw", '\n')
+    print(generate(decoder, 'vvmnw', 100, cuda=args.cuda), '\n')
+
+    print("Prime: The", '\n')
+    print(generate(decoder, 'The', 100, cuda=args.cuda), '\n')
+    print("Prime: What is", '\n')
+    print(generate(decoder, 'What is', 100, cuda=args.cuda), '\n')
+    print("Prime: Shall I give", '\n')
+    print(generate(decoder, 'Shall I give', 100, cuda=args.cuda), '\n')
+    print("Prime: X087hNYB BHN BYFVuhsdbs", '\n')
+    print(generate(decoder, 'X087hNYB BHN BYFVuhsdbs', 100, cuda=args.cuda), '\n')
+
+
 # Initialize models and start training
 
 decoder = CharRNN(
@@ -87,6 +121,8 @@ if args.cuda:
 start = time.time()
 all_losses = []
 loss_avg = 0
+perplexity = []
+
 
 try:
     print("Training for %d epochs..." % args.n_epochs)
@@ -94,14 +130,21 @@ try:
         loss = train(*random_training_set(args.chunk_len, args.batch_size))
         loss_avg += loss
 
+        perplexity.append(math.exp(loss))
+
         if epoch % args.print_every == 0:
             print('[%s (%d %d%%) %.4f]' % (time_since(start), epoch, epoch / args.n_epochs * 100, loss))
             print(generate(decoder, 'Wh', 100, cuda=args.cuda), '\n')
 
+    print_strings()
+
     print("Saving...")
     save()
+    make_plot(perplexity)
 
 except KeyboardInterrupt:
+    print_strings()
     print("Saving before quit...")
     save()
+    make_plot(perplexity)
 
