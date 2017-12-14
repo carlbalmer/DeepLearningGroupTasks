@@ -1,0 +1,1 @@
+{"log_dir": "./data/", "lr": 0.001, "optimizer": "SGD", "workers": 4, "no_cuda": false, "test_batch_size": 64, "dataset": "CIFAR10", "log_interval": 10, "experiment_name": "1_layer_sexplog_SGD_001", "model": "Sexy_CNN_Basic", "epochs": 100, "gpu_id": null, "batch_size": 64}

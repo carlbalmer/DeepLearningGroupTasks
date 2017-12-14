@@ -1,0 +1,1 @@
+{"experiment_name": "testDogs", "test_batch_size": 64, "gpu_id": null, "log_dir": "./data/", "epochs": 100, "batch_size": 64, "model": "Pooled_CNN_big", "dataset": "CIFAR10", "optimizer": "Adam", "log_interval": 10, "lr": 0.001, "workers": 4, "no_cuda": false}
