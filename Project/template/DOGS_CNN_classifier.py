@@ -280,6 +280,18 @@ def train(train_loader, model, criterion, optimizer, epoch):
     return
 
 
+def logg_alphas(model):
+    logging.info(' * Alpha1 {alpha} Grad1 {grad}'
+                 .format(alpha=float(model.module.alpha1.data.mean()),
+                         grad=model.module.alpha1._grad.data.mean() if model.module.alpha1._grad is not None else 0))
+    logging.info(' * Alpha2 {alpha} Grad2 {grad}'
+                 .format(alpha=float(model.module.alpha2.data.mean()),
+                         grad=model.module.alpha2._grad.data.mean() if model.module.alpha2._grad is not None else 0))
+    logging.info(' * Alpha3 {alpha} Grad3 {grad}'
+                 .format(alpha=float(model.module.alpha3.data.mean()),
+                         grad=model.module.alpha3._grad.data.mean() if model.module.alpha3._grad is not None else 0))
+
+
 def validate(val_loader, model, criterion, epoch, best_acc, best_model):
     """
     The validation routine
@@ -353,8 +365,7 @@ def validate(val_loader, model, criterion, epoch, best_acc, best_model):
 
     logging.info(' * Acc@1 {top1.avg:.3f} Acc@5 {top5.avg:.3f}'
           .format(top1=top1, top5=top5))
-    #logging.info(' * Alpha {alpha} Grad {grad}'
-    #      .format(alpha=float(model.module.alpha.data.mean()), grad=model.module.alpha._grad.data.mean() if model.module.alpha._grad is not None else 0))
+    logg_alphas(model)
 
     if top1.avg >= best_acc:
         best_acc = top1.avg
