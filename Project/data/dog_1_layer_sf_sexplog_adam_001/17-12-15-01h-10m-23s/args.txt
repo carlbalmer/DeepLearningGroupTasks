@@ -1,0 +1,1 @@
+{"lr": 0.001, "dataset": "CIFAR10", "log_dir": "./data/", "model": "Sexy_CNN_Basic", "batch_size": 64, "experiment_name": "dog_1_layer_sf_sexplog_adam_001", "no_cuda": false, "log_interval": 10, "epochs": 100, "workers": 4, "optimizer": "Adam", "gpu_id": null, "test_batch_size": 64}
