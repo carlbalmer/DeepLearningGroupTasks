@@ -1,0 +1,1 @@
+{"log_interval": 10, "batch_size": 64, "test_batch_size": 64, "model": "Spatial_Sexy_CNN_Basic", "epochs": 100, "lr": 0.001, "no_cuda": false, "log_dir": "./data/", "workers": 4, "experiment_name": "1_layer_spatial_adam_001", "gpu_id": null, "dataset": "CIFAR10", "optimizer": "Adam"}
