@@ -6,6 +6,7 @@ import errno
 import hashlib
 import os
 import os.path
+import numpy as np
 
 
 def check_integrity(fpath, md5):
@@ -88,3 +89,23 @@ def accuracy(output, target, topk=(1,)):
         correct_k = correct[:k].view(-1).float().sum(0)
         res.append(correct_k.mul_(100.0 / batch_size))
     return res
+
+
+def parse_file(filename):
+    val_acc = []
+    val_loss = []
+    running_loss = []
+    alpha = []
+    alpha_gradient = []
+    with open(filename, 'r') as log_file:
+        for line in log_file:
+            if "validate INFO: Epoch" in line:
+                running_loss.append(float(line.split(' ')[9]))
+            if "validate INFO:  * Acc@1" in line:
+                val_acc.append(float(line.split(' ')[8]))
+                val_loss.append(np.mean(running_loss))
+                running_loss = []
+            if "validate INFO:  * Alpha" in line:
+                alpha.append(float(line.split(' ')[8]))
+                alpha_gradient.append(float(line.split(' ')[10]))
+    return val_acc, val_loss, alpha, alpha_gradient
