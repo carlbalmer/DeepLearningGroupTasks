@@ -61,7 +61,7 @@ class Spatial_Sexy_CNN_big(nn.Module):
 
         self.pool3 = nn.AvgPool2d(2)
         self.alpha3 = nn.Parameter(torch.ones(1, 1, 4, 4))
-        self.upscale3 = nn.Upsample(scale_factor=3)
+        self.upscale3 = nn.Upsample(scale_factor=2)
 
         # Classification layer small 768, alex 4096
         self.fc = nn.Sequential(
@@ -83,7 +83,7 @@ class Spatial_Sexy_CNN_big(nn.Module):
         x = self.conv3(x)
         x = self.conv4(x)
         x = self.conv5(x)
-        x = self.pool3((self.upscale2(self.alpha2).mul(x)).exp()).log().mul(self.alpha2.pow(-1))
+        x = self.pool3((self.upscale3(self.alpha3).mul(x)).exp()).log().mul(self.alpha3.pow(-1))
         x = x.view(x.size(0), -1)
         x = self.fc(x)
         return x

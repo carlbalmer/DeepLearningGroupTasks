@@ -185,10 +185,16 @@ def main():
         best_acc, best_model = validate(test_loader, model, criterion, i, best_acc, best_model)
 
     logging.info('* Best Acc:{0}'.format(str(best_acc)))
+    logging.info("Final alphas\n")
+    print_alphas(model)
+
     logging.info('Saving best model')
 
     model.load_state_dict(best_model)
     torch.save(model.state_dict(), os.path.join(log_folder, 'best_model.pt'))
+
+    logging.info("Best alphas\n")
+    print_alphas(model)
 
     logging.info('Training completed')
 
@@ -290,6 +296,9 @@ def logg_alphas(model):
     logging.info(' * Alpha3 {alpha} Grad3 {grad}'
                  .format(alpha=float(model.module.alpha3.data.mean()),
                          grad=model.module.alpha3._grad.data.mean() if model.module.alpha3._grad is not None else 0))
+
+def print_alphas(model):
+    logging.info("Alpha1" + str(model.module.alpha1) + "\n Alpha2" + str(model.module.alpha2) + "\nAlpha3" + str(model.module.alpha3))
 
 
 def validate(val_loader, model, criterion, epoch, best_acc, best_model):
