@@ -1,0 +1,1 @@
+{"log_interval": 10, "test_batch_size": 64, "epochs": 100, "workers": 4, "experiment_name": "1_layer_maxpool_SGD_01", "lr": 0.01, "log_dir": "./data/", "model": "Pooled_CNN_Basic", "gpu_id": null, "batch_size": 64, "dataset": "CIFAR10", "no_cuda": false, "optimizer": "SGD"}

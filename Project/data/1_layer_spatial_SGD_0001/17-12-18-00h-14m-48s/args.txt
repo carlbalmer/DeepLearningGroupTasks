@@ -1,0 +1,1 @@
+{"dataset": "CIFAR10", "log_dir": "./data/", "lr": 0.0001, "no_cuda": false, "batch_size": 64, "workers": 4, "test_batch_size": 64, "epochs": 100, "model": "Spatial_Sexy_CNN_Basic", "log_interval": 10, "optimizer": "SGD", "gpu_id": null, "experiment_name": "1_layer_spatial_SGD_0001"}

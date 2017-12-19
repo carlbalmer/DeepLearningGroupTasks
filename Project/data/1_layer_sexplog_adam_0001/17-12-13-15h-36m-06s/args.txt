@@ -1,0 +1,1 @@
+{"test_batch_size": 64, "workers": 4, "optimizer": "Adam", "log_dir": "./data/", "no_cuda": false, "gpu_id": null, "log_interval": 10, "dataset": "CIFAR10", "epochs": 100, "experiment_name": "1_layer_sexplog_adam_0001", "lr": 0.0001, "batch_size": 64, "model": "Sexy_CNN_Basic"}

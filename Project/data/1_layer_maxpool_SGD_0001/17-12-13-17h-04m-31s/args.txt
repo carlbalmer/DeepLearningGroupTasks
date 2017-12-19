@@ -1,0 +1,1 @@
+{"dataset": "CIFAR10", "experiment_name": "1_layer_maxpool_SGD_0001", "no_cuda": false, "workers": 4, "gpu_id": null, "lr": 0.0001, "batch_size": 64, "log_dir": "./data/", "model": "Pooled_CNN_Basic", "test_batch_size": 64, "log_interval": 10, "epochs": 100, "optimizer": "SGD"}
