@@ -1,56 +1,36 @@
 import matplotlib.pyplot as plt
-import numpy as np
-import scipy
-from scipy.interpolate import interpolate
 
 from util.misc import parse_file
 
-input_filenames = ["data/3_layer_maxpool/17-12-18-14h-25m-58s/logs.txt",
-                   "data/3_layer_sexplog/17-12-18-14h-02m-08s/logs.txt",
-                   "data/3_layer_spatial/17-12-18-14h-14m-02s/logs.txt"
+input_filenames = ["data/1_layer_maxpool_adam_0001_200epoch/17-12-20-14h-52m-35s/logs.txt",
+                   "data/1_layer_sexplog_adam_0001_200epoch/17-12-20-14h-48m-12s/logs.txt",
+                   "data/1_layer_spatial_adam_0001_200epoch/17-12-20-14h-50m-24s/logs.txt"
                    ]
-alpha1 = []
-alpha2 = []
-alpha3 = []
-grad1 = []
-grad2 = []
-grad3 = []
+alpha = []
+alpha_gradient = []
 
 for filename in input_filenames:
-    _, _, a1, g1, a2, g2, a3, g3 = parse_file(filename)
-    alpha1.append(a1)
-    alpha2.append(a2)
-    alpha3.append(a3)
-    grad1.append(g1)
-    grad2.append(g2)
-    grad3.append(g3)
-
-# smooth curves
-xnew = np.linspace(0,499,500) # set to 500 for zero smoothing
+    _, _, a, g, _, _, _, _ = parse_file(filename)
+    alpha.append(a)
+    alpha_gradient.append(g)
 
 plt.figure(0)
-plt.plot(xnew, interpolate.spline(range(500), alpha1[1], xnew), label='SExpLog L1')
-plt.plot(xnew, interpolate.spline(range(500), alpha2[1], xnew), label='SExpLog L3')
-plt.plot(xnew, interpolate.spline(range(500), alpha3[1], xnew), label='SExpLog L2')
-plt.plot(xnew, interpolate.spline(range(500), alpha1[2], xnew), label='spatialSExpLog L1 (avg)')
-plt.plot(xnew, interpolate.spline(range(500), alpha2[2], xnew), label='spatialSExpLog L2 (avg)')
-plt.plot(xnew, interpolate.spline(range(500), alpha3[2], xnew), label='spatialSExpLog L3 (avg)')
+plt.plot(alpha[0], label='MAXpool')
+plt.plot(alpha[1], label='SExpLog')
+plt.plot(alpha[2], label='spatialSExpLog (avg)')
 
 plt.legend()
-plt.title("Comparison - DOGS - 5-layer-CNN")
+plt.title("Comparison - CIFAR10 - 3-layer-CNN")
 plt.ylabel('alpha')
 plt.xlabel('epoch')
 
 plt.figure(1)
-plt.plot(xnew, interpolate.spline(range(500), grad1[1], xnew), label='SExpLog L1')
-plt.plot(xnew, interpolate.spline(range(500), grad2[1], xnew), label='SExpLog L3')
-plt.plot(xnew, interpolate.spline(range(500), grad3[1], xnew), label='SExpLog L2')
-plt.plot(xnew, interpolate.spline(range(500), grad1[2], xnew), label='spatialSExpLog L1 (avg)')
-plt.plot(xnew, interpolate.spline(range(500), grad2[2], xnew), label='spatialSExpLog L2 (avg)')
-plt.plot(xnew, interpolate.spline(range(500), grad3[2], xnew), label='spatialSExpLog L3 (avg)')
+plt.plot(alpha_gradient[0], label='MAXpool')
+plt.plot(alpha_gradient[1], label='SExpLog')
+plt.plot(alpha_gradient[2], label='spatialSExpLog (avg)')
 
 plt.legend()
-plt.title("Comparison - DOGS - 5-layer-CNN")
+plt.title("Comparison - CIFAR10 - 3-layer-CNN")
 plt.ylabel('gradient')
 plt.xlabel('epoch')
 

@@ -26,15 +26,15 @@ for filename in input_filenames:
     grad3.append(g3)
 
 # smooth curves
-xnew = np.linspace(0,499,500) # set to 500 for zero smoothing
+xnew = np.linspace(0,499,50) # set to 500 for zero smoothing
 
 plt.figure(0)
-plt.plot(xnew, interpolate.spline(range(500), alpha1[1], xnew), label='SExpLog L1')
-plt.plot(xnew, interpolate.spline(range(500), alpha2[1], xnew), label='SExpLog L3')
-plt.plot(xnew, interpolate.spline(range(500), alpha3[1], xnew), label='SExpLog L2')
-plt.plot(xnew, interpolate.spline(range(500), alpha1[2], xnew), label='spatialSExpLog L1 (avg)')
-plt.plot(xnew, interpolate.spline(range(500), alpha2[2], xnew), label='spatialSExpLog L2 (avg)')
-plt.plot(xnew, interpolate.spline(range(500), alpha3[2], xnew), label='spatialSExpLog L3 (avg)')
+plt.plot(xnew, interpolate.spline(range(500), alpha1[1], xnew), label='SExpLog L1', color='C1', linestyle='-')
+plt.plot(xnew, interpolate.spline(range(500), alpha2[1], xnew), label='SExpLog L2', color='C1', linestyle='--')
+plt.plot(xnew, interpolate.spline(range(500), alpha3[1], xnew), label='SExpLog L3', color='C1', linestyle=':')
+plt.plot(xnew, interpolate.spline(range(500), alpha1[2], xnew), label='spatialSExpLog L1 (avg)', color='C2', linestyle='-')
+plt.plot(xnew, interpolate.spline(range(500), alpha2[2], xnew), label='spatialSExpLog L2 (avg)', color='C2', linestyle='--')
+plt.plot(xnew, interpolate.spline(range(500), alpha3[2], xnew), label='spatialSExpLog L3 (avg)', color='C2', linestyle=':')
 
 plt.legend()
 plt.title("Comparison - DOGS - 5-layer-CNN")
@@ -42,13 +42,24 @@ plt.ylabel('alpha')
 plt.xlabel('epoch')
 
 plt.figure(1)
-plt.plot(xnew, interpolate.spline(range(500), grad1[1], xnew), label='SExpLog L1')
-plt.plot(xnew, interpolate.spline(range(500), grad2[1], xnew), label='SExpLog L3')
-plt.plot(xnew, interpolate.spline(range(500), grad3[1], xnew), label='SExpLog L2')
-plt.plot(xnew, interpolate.spline(range(500), grad1[2], xnew), label='spatialSExpLog L1 (avg)')
-plt.plot(xnew, interpolate.spline(range(500), grad2[2], xnew), label='spatialSExpLog L2 (avg)')
-plt.plot(xnew, interpolate.spline(range(500), grad3[2], xnew), label='spatialSExpLog L3 (avg)')
+plt.plot(xnew, interpolate.spline(range(500), grad1[1], xnew), label='SExpLog L1', color='C1', linestyle='-')
+plt.plot(xnew, interpolate.spline(range(500), grad2[1], xnew), label='SExpLog L2', color='C1', linestyle='--')
+plt.plot(xnew, interpolate.spline(range(500), grad3[1], xnew), label='SExpLog L3', color='C1', linestyle=':')
+plt.plot(xnew, interpolate.spline(range(500), grad1[2], xnew), label='spatialSExpLog L1 (avg)', color='C2', linestyle='-')
+plt.plot(xnew, interpolate.spline(range(500), grad2[2], xnew), label='spatialSExpLog L2 (avg)', color='C2', linestyle='--')
+plt.plot(xnew, interpolate.spline(range(500), grad3[2], xnew), label='spatialSExpLog L3 (avg)', color='C2', linestyle=':')
 
+plt.legend()
+plt.title("Comparison - DOGS - 5-layer-CNN")
+plt.ylabel('gradient')
+plt.xlabel('epoch')
+
+plt.figure(2)
+plt.plot(xnew, interpolate.spline(range(500), grad1[2], xnew), label='spatialSExpLog L1 (avg)', color='C2', linestyle='-')
+plt.plot(xnew, interpolate.spline(range(500), grad2[2], xnew), label='spatialSExpLog L2 (avg)', color='C2', linestyle='--')
+plt.plot(xnew, interpolate.spline(range(500), grad3[2], xnew), label='spatialSExpLog L3 (avg)', color='C2', linestyle=':')
+
+plt.ylim((-0.001,0.001))
 plt.legend()
 plt.title("Comparison - DOGS - 5-layer-CNN")
 plt.ylabel('gradient')
