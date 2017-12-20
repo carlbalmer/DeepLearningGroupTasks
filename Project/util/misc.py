@@ -110,7 +110,7 @@ def parse_file(filename):
                 val_acc.append(float(line.split(' ')[8]))
                 val_loss.append(np.mean(running_loss))
                 running_loss = []
-            if "INFO:  * Alpha" in line or "validate INFO:  * Alpha1" in line:
+            if "INFO:  * Alpha " in line or "validate INFO:  * Alpha1" in line:
                 alpha.append(float(line.split(' ')[8]))
                 alpha_gradient.append(float(line.split(' ')[10]))
             if "INFO:  * Alpha2" in line:
