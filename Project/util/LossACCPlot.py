@@ -1,37 +1,43 @@
 import matplotlib.pyplot as plt
+import numpy as np
+import scipy
+from scipy.interpolate import interpolate
 
 from util.misc import parse_file
 
-input_filenames = ["data/1_layer_maxpool_adam_0001/17-12-13-17h-24m-31s/logs.txt",
-                   "data/1_layer_sexplog_adam_0001/17-12-13-15h-36m-06s/logs.txt",
-                   "data/1_layer_spatial_adam_0001/17-12-18-00h-13m-20s/logs.txt"
+input_filenames = ["data/3_layer_maxpool/17-12-18-14h-25m-58s/logs.txt",
+                   "data/3_layer_sexplog/17-12-18-14h-02m-08s/logs.txt",
+                   "data/3_layer_spatial/17-12-18-14h-14m-02s/logs.txt"
                    ]
-alpha = []
-alpha_gradient = []
+acc = []
+loss = []
 
 for filename in input_filenames:
-    _, _, a, g = parse_file(filename)
-    alpha.append(a)
-    alpha_gradient.append(g)
+    a, l, _, _, _, _, _, _ = parse_file(filename)
+    acc.append(a)
+    loss.append(l)
+
+# smooth curves
+xnew = np.linspace(0,499,50) # set to 500 for zero smoothing
 
 plt.figure(0)
-plt.plot(alpha[0], label='MAXpool')
-plt.plot(alpha[1], label='SExpLog')
-plt.plot(alpha[2], label='spatialSExpLog (avg)')
+plt.plot(xnew, interpolate.spline(range(500), acc[0], xnew), label='MAXpool')
+plt.plot(xnew, interpolate.spline(range(500), acc[1], xnew), label='SExpLog')
+plt.plot(xnew, interpolate.spline(range(500), acc[2], xnew), label='spatialSExpLog')
 
 plt.legend()
-plt.title("Comparison - CIFAR10 - 3-layer-CNN")
-plt.ylabel('alpha')
+plt.title("Comparison - DOGS - 5-layer-CNN")
+plt.ylabel('accuracy')
 plt.xlabel('epoch')
 
 plt.figure(1)
-plt.plot(alpha_gradient[0], label='MAXpool')
-plt.plot(alpha_gradient[1], label='SExpLog')
-plt.plot(alpha_gradient[2], label='spatialSExpLog (avg)')
+plt.plot(xnew, interpolate.spline(range(500), loss[0], xnew), label='MAXpool')
+plt.plot(xnew, interpolate.spline(range(500), loss[1], xnew), label='SExpLog')
+plt.plot(xnew, interpolate.spline(range(500), loss[2], xnew), label='spatialSExpLog')
 
 plt.legend()
-plt.title("Comparison - CIFAR10 - 3-layer-CNN")
-plt.ylabel('gradient')
+plt.title("Comparison - DOGS - 5-layer-CNN")
+plt.ylabel('loss')
 plt.xlabel('epoch')
 
 plt.show()

@@ -97,6 +97,11 @@ def parse_file(filename):
     running_loss = []
     alpha = []
     alpha_gradient = []
+    alpha2 = []
+    alpha2_gradient = []
+    alpha3 = []
+    alpha3_gradient = []
+
     with open(filename, 'r') as log_file:
         for line in log_file:
             if "validate INFO: Epoch" in line:
@@ -105,7 +110,13 @@ def parse_file(filename):
                 val_acc.append(float(line.split(' ')[8]))
                 val_loss.append(np.mean(running_loss))
                 running_loss = []
-            if "validate INFO:  * Alpha" in line:
+            if "INFO:  * Alpha" in line or "validate INFO:  * Alpha1" in line:
                 alpha.append(float(line.split(' ')[8]))
                 alpha_gradient.append(float(line.split(' ')[10]))
-    return val_acc, val_loss, alpha, alpha_gradient
+            if "INFO:  * Alpha2" in line:
+                alpha2.append(float(line.split(' ')[8]))
+                alpha2_gradient.append(float(line.split(' ')[10]))
+            if "INFO:  * Alpha3" in line:
+                alpha3.append(float(line.split(' ')[8]))
+                alpha3_gradient.append(float(line.split(' ')[10]))
+    return val_acc, val_loss, alpha, alpha_gradient, alpha2, alpha2_gradient, alpha3, alpha3_gradient
