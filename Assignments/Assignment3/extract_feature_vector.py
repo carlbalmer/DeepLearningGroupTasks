@@ -6,7 +6,7 @@ from torch.utils.data import DataLoader
 from torch.utils.data.sampler import SubsetRandomSampler
 from torchvision import transforms
 
-from dataset_helpers import DogsDataset, make_stratified_splits
+from .dataset_helpers import DogsDataset, make_stratified_splits
 import torch
 import torchvision
 from torch import nn

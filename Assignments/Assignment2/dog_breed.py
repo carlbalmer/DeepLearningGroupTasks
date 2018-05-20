@@ -22,7 +22,7 @@ from torchvision import datasets, models
 
 IMG_PATH = 'dogs/train/'
 IMG_EXT = '.jpg'
-TRAIN_DATA = 'dogs/labels.csv'
+TRAIN_LABELS = 'dogs/labels.csv'
 
 
 class DogsDataset(Dataset):
@@ -70,7 +70,7 @@ transformations = transforms.Compose([
     transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
 ])
 
-dset = DogsDataset(TRAIN_DATA, IMG_PATH, IMG_EXT, transformations)
+dset = DogsDataset(TRAIN_LABELS, IMG_PATH, IMG_EXT, transformations)
 
 
 def make_stratified_splits(D_in: DogsDataset):

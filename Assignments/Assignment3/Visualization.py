@@ -15,6 +15,7 @@ labels = []
 names =[]
 for feature in feautures:
 
+
     feature_vector.append(feature['features'])
     labels.append(feature['correctly_classified'])
     names.append(feature['encoded_label'])
